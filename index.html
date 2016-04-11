@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/angular.js"></script>
 </head>
-<body>
+<body ng-cloack>
 <header>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -39,97 +39,23 @@
         </div>
     </nav>
 </header>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
+
+<div class="products" ng-controller="myCtrl">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4" ng-repeat="product in products">
+                <div class="thumbnail">
+                    <img src="{{product.img}}" alt="">
+                    <div class="caption">
+                        <h3>{{product.title}}</h3>
+                        <p class="description">{{product.description}}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <img src="http://fakeimg.pl/340x200/">
-                <div class="caption">
-                    <h3>Thumbnail label</h3>
-                    <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida
-                        at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                    <p class="btn-thumb"><a href="#" class="btn btn-primary" role="button">View</a> <a href="#"
-                                                                                                       class="btn btn-default"
-                                                                                                       role="button">Edit</a>
-                        <a href="#" class="btn btn-default" role="button">Delete</a></p>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
-
 
 <footer>
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
@@ -141,5 +67,17 @@
 
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+
+
+<script type="text/javascript">
+    var myApp = angular.module("myApp", []);
+    myApp.controller("myCtrl", function ($scope, $http) {
+        $http.get("http://localhost:3000/products").success(function (myProducts) {
+            $scope.products = myProducts;
+            console.log(myProducts)
+        });
+    });
+</script>
 </body>
 </html>
