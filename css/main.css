@@ -25,3 +25,14 @@ body {
 .btn-thumb {
     text-align: center;
 }
+
+.row {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+    flex-wrap: wrap;
+}
+.row > [class*='col-'] {
+    display: flex;
+}
