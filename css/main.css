@@ -1,0 +1,28 @@
+body {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+.footer {
+    text-align: center;
+}
+
+.footer > p {
+    float: none;
+    display: inline-block;
+}
+
+/*if you want a static footer*/
+.navbar-static-bottom {
+    border-radius: 0;
+    z-index: 1000;
+    border-width: 0 0 1px;
+    padding-right: 0;
+    padding-left: 0;
+    margin: 20px 0 0;
+}
+
+
+.btn-thumb {
+    text-align: center;
+}
