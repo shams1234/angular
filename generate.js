@@ -16,8 +16,9 @@ module.exports = function () {
                 firstName: faker.name.findName(),
                 lastName: faker.name.lastName(),
                 userName: faker.internet.userName(),
-                email: faker.internet.email(),
-                phone: faker.phone.phoneNumber()
+                userEmail: faker.internet.email(),
+                userPhone: faker.phone.phoneNumber(),
+                userPassword: faker.internet.password()
 
             }
         })

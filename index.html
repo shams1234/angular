@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <script src="js/angular.js"></script>
+    <script src="js/ngRoute.js"></script>
+    <script src="js/ngAnimate.js"></script>
 </head>
 <body ng-cloak="">
 <header>
@@ -26,8 +28,8 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li class="active"><a href="#registration" >Registration</a></li>
+                    <li><a href="#">About</a></li>
+                    <li class="active"><a href="#">Registration</a></li>
 
                 </ul>
             </div><!--/.nav-collapse -->
@@ -36,14 +38,13 @@
 </header>
 
 
-
-<div class="top-content" ng-controller="registrationCtrl">
+<div class="top-content" ng-controller="loginController">
 
     <div class="inner-bg">
         <div class="container">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2 text">
-                    <h1><strong>Login</strong>  &amp; Register Forms</h1>
+                    <h1><strong>Login</strong> &amp; Register Forms</h1>
                     <div class="description">
                         <p>
                             Login or Register
@@ -60,8 +61,11 @@
                             <div class="form-top-left">
                                 <h3>Login to our site</h3>
                                 <p>Enter username and password to log on:</p>
+                                <div ng-show="error" class="alert alert-danger error">{{errorMessage}}</div>
                             </div>
+
                             <div class="form-top-right">
+
                                 <i class="fa fa-lock"></i>
                             </div>
                         </div>
@@ -69,13 +73,16 @@
                             <form role="form" action="" method="post" class="login-form">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-username">Username</label>
-                                    <input type="text" ng-model="userName" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">
+                                    <input type="text" ng-model="userName.username" name="form-username"
+                                           placeholder="Username..." class="form-username form-control"
+                                           id="form-username">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-password">Password</label>
-                                    <input type="password" ng-model="userEmail" name="form-password" placeholder="Password or email" class="form-password form-control" id="form-password">
+                                    <input type="password" ng-model="userPassword.password" name="form-password"
+                                           placeholder="Password" class="form-password form-control" id="form-password">
                                 </div>
-                                <button type="button" ng-click="checkUser()" class="btn">Sign in!</button>
+                                <button type="button" ng-click="login()" class="btn">Sign in!</button>
                             </form>
                         </div>
                     </div>
@@ -116,20 +123,24 @@
                             <form role="form" action="" method="post" class="registration-form">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-first-name">First name</label>
-                                    <input type="text" name="form-first-name" placeholder="First name..." class="form-first-name form-control" id="form-first-name">
+                                    <input type="text" name="form-first-name" placeholder="First name..."
+                                           class="form-first-name form-control" id="form-first-name">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-last-name">Last name</label>
-                                    <input type="text" name="form-last-name" placeholder="Last name..." class="form-last-name form-control" id="form-last-name">
+                                    <input type="text" name="form-last-name" placeholder="Last name..."
+                                           class="form-last-name form-control" id="form-last-name">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-email">Email</label>
-                                    <input type="text" name="form-email" placeholder="Email..." class="form-email form-control" id="form-email">
+                                    <input type="text" name="form-email" placeholder="Email..."
+                                           class="form-email form-control" id="form-email">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-about-yourself">About yourself</label>
 				                        	<textarea name="form-about-yourself" placeholder="About yourself..."
-                                                      class="form-about-yourself form-control" id="form-about-yourself"></textarea>
+                                                      class="form-about-yourself form-control"
+                                                      id="form-about-yourself"></textarea>
                                 </div>
                                 <button type="submit" class="btn">Sign me up!</button>
                             </form>
@@ -144,14 +155,72 @@
             <div class="container">
                 <label><input type="checkbox" ng-model="test" ng-change="ShowHide()"/>Show Main panel</label>
                 <div class="row">
-                    <div class="col-sm-6 col-md-4" ng-if="isVisible"  ng-repeat="product in products">
+                    <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
+
+                    <div class="col-sm-6 col-md-4 " ng-if="isVisible" ng-repeat="product in products">
+
                         <div class="thumbnail">
                             <img ng-src="{{product.img}}" alt="">
                             <div class="caption">
                                 <h3>{{product.title}}</h3>
                                 <p class="description">{{product.description}}</p>
                                 <div class="footer">
-                                    <p class="btn-thumb"><a href="#" class="btn btn-info" role="button">View</a> <a href="#" class="btn btn-default" role="button">Edit</a> <a href="#" class="btn btn-default" role="button">Delete</a></p>
+                                    <p class="btn-thumb">
+                                        <button class="btn btn-info" ng-click="viewProduct(product)">View</button>
+                                        <button class="btn btn-default" data-toggle="modal" ng-click="copyProduct(product)"
+                                                data-target="#modal-{{product.id}}">Edit
+                                        </button>
+                                        <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
+                                            Delete
+                                        </button>
+                                    </p>
+                                    <div class="modal fade" id="modal-{{product.id}}" role="dialog">
+                                        <div class="modal-dialog">
+
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close"
+                                                            data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Editor</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="alert alert-info alert-dismissable">
+                                                        <a class="panel-close close" data-dismiss="alert">×</a>
+                                                        <i class="fa fa-coffee"></i>
+                                                        This is an <strong>.alert</strong>. Use this to show important
+                                                        messages to the user.
+                                                    </div>
+                                                    <h3 class="modal-header">{{product.title}}</h3>
+                                                    <form name="form" class="form-horizontal" role="form" novalidate>
+                                                        <div class="form-group">
+                                                            <label class="col-lg-3 control-label">Title:</label>
+                                                            <div class="col-lg-8">
+                                                                <input class="form-control" ng-model="product.title" type="text"
+                                                                       value="{{form}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-lg-3 control-label">Description:</label>
+                                                            <div class="col-lg-8">
+                                                                <textarea class="form-control" ng-model="product.description" rows="10" value="{{form}}'"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-md-3 control-label"></label>
+                                                            <div class="col-md-8">
+                                                                <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveProduct(product)"
+                                                                       value="Save Changes">
+                                                                <span></span>
+                                                                <button class="btn btn-default" data-dismiss="modal"
+                                                                         ng-click="reset(product)">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,10 +230,7 @@
         </div>
     </div>
 
-
 </div>
-
-
 
 
 <footer>
@@ -179,28 +245,204 @@
 <script src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-    var myApp = angular.module("myApp", []);
+    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate"]);
     myApp.controller("productsCtrl", function ($scope, $http) {
         $http.get("http://localhost:3000/products").success(function (myProducts) {
             $scope.products = myProducts;
             $scope.isVisible = false;
-            $scope.ShowHide = function (){
+//            $scope.editMsg = false;
+
+
+
+            $scope.ShowHide = function () {
                 $scope.isVisible = $scope.test;
-            }
+            };
+            $scope.viewProduct = function (product) {
+                $http.get("http://localhost:3000/products/" + product.id)
+                        .success(function () {
+
+                            console.log(product.title);
+                        })
+                        .error(function () {
+
+                        });
+            };
+            $scope.deleteProduct = function (product) {
+                $http.delete("http://localhost:3000/products/" + product.id)
+                        .success(function () {
+                            var index = $scope.products.indexOf(product);
+                            $scope.info = true;
+                            $scope.products.splice(index, 1);
+                            $scope.deleteMsg = "Product " + product.title + " was successfully deleted";
+                            console.log($scope.products);
+                        })
+                        .error(function () {
+
+                        });
+            };
+            $scope.saveProduct = function(product){
+                $http.put("http://localhost:3000/products/" + product.id, {
+                    title: product.title,
+                    description: product.description,
+                    img: product.img
+                })
+                        .success(function(){
+                            $scope.info = true;
+                            $scope.deleteMsg = "Product " + product.title + " was successfully updated";
+
+                        });
+
+            };
+
+            $scope.copyProduct = function(product){
+                $scope.form = angular.copy(product);
+                console.log($scope.form)
+            };
+
+            $scope.reset = function(product){
+               product.title = $scope.form.title;
+                product.description = $scope.form.description;
+                product.img = $scope.form.img;
+                $scope.info = true;
+                $scope.deleteMsg = "Product " + product.title + " was not updated";
+            };
         });
     });
-    myApp.controller("registrationCtrl", function($scope, $http){
-        $http({
-            method: "GET",
-            url: "http://localhost:3000/users"
-        }).success(function(myUsers){
-            $scope.users = myUsers;
-            $scope.checkUser = function(){
-                console.log(myUsers);
 
-            }
-        })
-    })
+    myApp.config(['$routeProvider', function ($routeProvider) {
+
+        $routeProvider.when('/', {
+                    controller: 'productCtrl',
+                    templateUrl: '/angular/index.html'
+                })
+                .otherwise({redirectTo: '/'});
+
+    }]);
+
+    myApp.factory("AuthService", ["$q", "$http", function ($q, $http) {
+        var user = null;
+
+        return ({
+            isLoggedIn: isLoggedIn,
+            login: login,
+            logout: logout,
+            register: register
+        });
+        function isLoggedIn() {
+            return user
+        }
+
+        function login(username, password) {
+
+            // create a new instance of deferred
+            var deferred = $q.defer();
+
+            // send a post request to the server
+            $http.post("http://localhost:3000/users", {userName: username, userPassword: password})
+                    // handle success
+
+                    .success(function (data, status) {
+                        if (status === 200 && data.result) {
+                            user = true;
+
+                            deferred.resolve();
+                        } else {
+                            user = false;
+                            deferred.reject();
+                        }
+
+                    })
+                    // handle error
+                    .error(function () {
+                        user = false;
+                        deferred.reject();
+
+                    });
+
+            // return promise object
+            return deferred.promise;
+
+        }
+
+        function logout() {
+
+            // create a new instance of deferred
+            var deferred = $q.defer();
+
+            // send a get request to the server
+            $http.get('/api/logout')
+                    // handle success
+                    .success(function (data) {
+                        user = false;
+                        deferred.resolve();
+                    })
+                    // handle error
+                    .error(function (data) {
+                        user = false;
+                        deferred.reject();
+                    });
+
+            // return promise object
+            return deferred.promise;
+
+        }
+
+        function register(username, password) {
+
+            // create a new instance of deferred
+            var deferred = $q.defer();
+
+            // send a post request to the server
+            $http.post('/api/register', {userName: username, password: password})
+                    // handle success
+                    .success(function (data, status) {
+                        if (status === 200 && data.result) {
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    })
+                    // handle error
+                    .error(function (data) {
+                        deferred.reject();
+                    });
+
+            // return promise object
+            return deferred.promise;
+
+        }
+
+
+    }]);
+
+    myApp.controller('loginController', ["$scope", "$location", "AuthService",
+        function ($scope, $location, AuthService) {
+
+            $scope.login = function () {
+                // initial values
+                $scope.error = false;
+                $scope.disabled = true;
+                // call login from service
+                AuthService.login($scope.userName.username, $scope.userPassword.password)
+                        // handle success
+                        .then(function () {
+                            $location.path('/');
+                            console.log("пользователь есть");
+                            $scope.disabled = false;
+                            $scope.userName = {};
+                        })
+                        // handle error
+                        .catch(function () {
+                            $scope.error = true;
+                            console.log("пользователя нет");
+                            $scope.errorMessage = "Invalid username and / or password";
+                            $scope.disabled = false;
+                            $scope.userName = {};
+                        });
+
+            };
+
+        }]);
 </script>
 </body>
 </html>
