@@ -154,10 +154,15 @@
         <div class="products" ng-controller="productsCtrl">
             <div class="container">
                 <label><input type="checkbox" ng-model="test" ng-change="ShowHide()"/>Show Main panel</label>
-                <div class="row">
+                <div class="row" ng-if="isVisible">
+                    <div class="col-sm-6 col-md-4 ">
+                        <div class="thumbnail add">
+                            <a href="" ng-click="addProduct()"><i class="centerFa fa fa-plus"></i></a>
+                        </div>
+                    </div>
                     <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
 
-                    <div class="col-sm-6 col-md-4 " ng-if="isVisible" ng-repeat="product in products">
+                    <div class="col-sm-6 col-md-4 " ng-repeat="product in products">
 
                         <div class="thumbnail">
                             <img ng-src="{{product.img}}" alt="">
@@ -292,6 +297,9 @@
 
                         });
 
+            };
+            $scope.addProduct = function (product) {
+                console.log(" add product")
             };
 
             $scope.copyProduct = function(product){
