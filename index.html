@@ -154,21 +154,20 @@
         <div class="products" ng-controller="productsCtrl">
             <div class="container">
                 <label><input type="checkbox" ng-model="test" ng-change="ShowHide()"/>Show Main panel</label>
-                <div class="row" ng-if="isVisible">
+                <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
+                <div class="row flex-row" ng-if="isVisible">
                     <div class="col-sm-6 col-md-4 ">
-                        <div class="thumbnail add">
-                            <a href="" ng-click="addProduct()"><i class="centerFa fa fa-plus"></i></a>
+                        <div class="thumbnail">
+                            <a href=""  ng-click="addProduct()"><i class="centerFa fa fa-plus"></i></a>
                         </div>
                     </div>
-                    <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
-
                     <div class="col-sm-6 col-md-4 " ng-repeat="product in products">
 
                         <div class="thumbnail">
                             <img ng-src="{{product.img}}" alt="">
                             <div class="caption">
                                 <h3>{{product.title}}</h3>
-                                <p class="description">{{product.description}}</p>
+                                <p class="description flex-text text-muted">{{product.description}}</p>
                                 <div class="footer">
                                     <p class="btn-thumb">
                                         <button class="btn btn-info" ng-click="viewProduct(product)">View</button>
@@ -278,7 +277,7 @@
                             var index = $scope.products.indexOf(product);
                             $scope.info = true;
                             $scope.products.splice(index, 1);
-                            $scope.deleteMsg = "Product " + product.title + " was successfully deleted";
+                            $scope.deleteMsg = 'Product  "'+ product.title + '" was successfully deleted';
                             console.log($scope.products);
                         })
                         .error(function () {
@@ -293,7 +292,7 @@
                 })
                         .success(function(){
                             $scope.info = true;
-                            $scope.deleteMsg = "Product " + product.title + " was successfully updated";
+                            $scope.deleteMsg = 'Product "'+ product.title + '" was successfully updated';
 
                         });
 
@@ -312,7 +311,7 @@
                 product.description = $scope.form.description;
                 product.img = $scope.form.img;
                 $scope.info = true;
-                $scope.deleteMsg = "Product " + product.title + " was not updated";
+                $scope.deleteMsg = 'Product "' + product.title + '" was not updated';
             };
         });
     });
