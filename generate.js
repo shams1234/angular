@@ -8,7 +8,7 @@ module.exports = function () {
                 description: faker.lorem.paragraph(),
                 title: faker.lorem.word(),
                 img: faker.image.technics()
-            }
+        }
         }),
         users: _.times(3, function(n){
             return {
