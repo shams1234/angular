@@ -10,8 +10,23 @@
     <script src="js/angular.js"></script>
     <script src="js/ngRoute.js"></script>
     <script src="js/ngAnimate.js"></script>
+
+    <!-- We use client cookies to save the user credentials -->
+    <script src="//code.angularjs.org/1.2.16/angular-cookies.min.js"></script>
+
+    <!-- Auth0 Lock script and AngularJS module -->
+    <script src="//cdn.auth0.com/js/lock-9.0.min.js"></script>
+    <!-- angular-jwt and angular-storage -->
+    <script type="text/javascript" src="//cdn.rawgit.com/auth0/angular-storage/master/dist/angular-storage.js"></script>
+    <script type="text/javascript" src="//cdn.rawgit.com/auth0/angular-jwt/master/dist/angular-jwt.js"></script>
+
+    <script src="//cdn.auth0.com/w2/auth0-angular-4.js"> </script>
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
-<body ng-cloak="">
+<body ng-cloak>
 <header>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -29,7 +44,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Home</a></li>
                     <li><a href="#">About</a></li>
-                    <li class="active"><a href="#">Registration</a></li>
+                    <!--<li class="active"><a href="" ng-click="logout()">Logout</a></li>-->
 
                 </ul>
             </div><!--/.nav-collapse -->
@@ -38,197 +53,13 @@
 </header>
 
 
-<div class="top-content" ng-controller="loginController">
-
+<div class="top-content" ng-controller="loginCtrl">
+    <div class="products" ng-controller="productsCtrl">
     <div class="inner-bg">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-8 col-sm-offset-2 text">
-                    <h1><strong>Login</strong> &amp; Register Forms</h1>
-                    <div class="description">
-                        <p>
-                            Login or Register
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-5">
-
-                    <div class="form-box">
-                        <div class="form-top">
-                            <div class="form-top-left">
-                                <h3>Login to our site</h3>
-                                <p>Enter username and password to log on:</p>
-                                <div ng-show="error" class="alert alert-danger error">{{errorMessage}}</div>
-                            </div>
-
-                            <div class="form-top-right">
-
-                                <i class="fa fa-lock"></i>
-                            </div>
-                        </div>
-                        <div class="form-bottom">
-                            <form role="form" action="" method="post" class="login-form">
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-username">Username</label>
-                                    <input type="text" ng-model="userName.username" name="form-username"
-                                           placeholder="Username..." class="form-username form-control"
-                                           id="form-username">
-                                </div>
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-password">Password</label>
-                                    <input type="password" ng-model="userPassword.password" name="form-password"
-                                           placeholder="Password" class="form-password form-control" id="form-password">
-                                </div>
-                                <button type="button" ng-click="login()" class="btn">Sign in!</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="social-login">
-                        <h3>...or login with:</h3>
-                        <div class="social-login-buttons">
-                            <a class="btn btn-link-2" href="#">
-                                <i class="fa fa-facebook"></i> Facebook
-                            </a>
-                            <a class="btn btn-link-2" href="#">
-                                <i class="fa fa-twitter"></i> Twitter
-                            </a>
-                            <a class="btn btn-link-2" href="#">
-                                <i class="fa fa-google-plus"></i> Google Plus
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="col-sm-1 middle-border"></div>
-                <div class="col-sm-1"></div>
-
-                <div class="col-sm-5">
-
-                    <div class="form-box">
-                        <div class="form-top">
-                            <div class="form-top-left">
-                                <h3>Sign up now</h3>
-                                <p>Fill in the form below to get instant access:</p>
-                            </div>
-                            <div class="form-top-right">
-                                <i class="fa fa-pencil"></i>
-                            </div>
-                        </div>
-                        <div class="form-bottom">
-                            <form role="form" action="" method="post" class="registration-form">
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-first-name">First name</label>
-                                    <input type="text" name="form-first-name" placeholder="First name..."
-                                           class="form-first-name form-control" id="form-first-name">
-                                </div>
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-last-name">Last name</label>
-                                    <input type="text" name="form-last-name" placeholder="Last name..."
-                                           class="form-last-name form-control" id="form-last-name">
-                                </div>
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-email">Email</label>
-                                    <input type="text" name="form-email" placeholder="Email..."
-                                           class="form-email form-control" id="form-email">
-                                </div>
-                                <div class="form-group">
-                                    <label class="sr-only" for="form-about-yourself">About yourself</label>
-				                        	<textarea name="form-about-yourself" placeholder="About yourself..."
-                                                      class="form-about-yourself form-control"
-                                                      id="form-about-yourself"></textarea>
-                                </div>
-                                <button type="submit" class="btn">Sign me up!</button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+        <div ng-view>
         </div>
-        <div class="products" ng-controller="productsCtrl">
-            <div class="container">
-                <label><input type="checkbox" ng-model="test" ng-change="ShowHide()"/>Show Main panel</label>
-                <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
-                <div class="row flex-row" ng-if="isVisible">
-                    <div class="col-sm-6 col-md-4 ">
-                        <div class="thumbnail">
-                            <a href="" data-toggle="modal" data-target="#myModal"><i class="centerFa fa fa-plus"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 " ng-repeat="product in products">
 
-                        <div class="thumbnail">
-                            <img ng-src="{{product.img}}" alt="">
-                            <div class="caption">
-                                <h3>{{product.title}}</h3>
-                                <p class="description flex-text text-muted">{{product.description}}</p>
-                                <p class="btn-thumb">
-                                        <button class="btn btn-info" ng-click="viewProduct(product)">View</button>
-                                        <button class="btn btn-default" data-toggle="modal" ng-click="copyProduct(product)"
-                                                data-target="#modal-{{product.id}}">Edit
-                                        </button>
-                                        <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
-                                            Delete
-                                        </button>
-                                </p>
-                                    <div class="modal fade" id="modal-{{product.id}}" role="dialog">
-                                        <div class="modal-dialog">
 
-                                            <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close"
-                                                            data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Editor</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="alert alert-info alert-dismissable">
-                                                        <a class="panel-close close" data-dismiss="alert">×</a>
-                                                        <i class="fa fa-coffee"></i>
-                                                        This is an <strong>.alert</strong>. Use this to show important
-                                                        messages to the user.
-                                                    </div>
-                                                    <h3 class="modal-header">{{product.title}}</h3>
-                                                    <form name="form" class="form-horizontal" role="form" novalidate>
-                                                        <div class="form-group">
-                                                            <label class="col-lg-3 control-label">Title:</label>
-                                                            <div class="col-lg-8">
-                                                                <input class="form-control" ng-model="product.title" type="text"
-                                                                       value="{{form}}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-lg-3 control-label">Description:</label>
-                                                            <div class="col-lg-8">
-                                                                <textarea class="form-control" ng-model="product.description" rows="10" value="{{form}}"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-md-3 control-label"></label>
-                                                            <div class="col-md-8">
-                                                                <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveProduct(product)"
-                                                                       value="Save Changes">
-                                                                <span></span>
-                                                                <button class="btn btn-default" data-dismiss="modal"
-                                                                         ng-click="reset(product)">Cancel</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -275,10 +106,10 @@
 
 
 
-<footer>
+<footer ng-controller="loginCtrl">
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
         <div class="container footer">
-            <p>Signed in as <a href="#" class="navbar-link">Mark Otto</a></p>
+            <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!login" ng-click="logout()"> Logout !</a></p>
         </div>
     </nav>
 </footer>
@@ -287,11 +118,93 @@
 <script src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate"]);
+
+    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt"]);
+//            .run(function($rootScope, auth, store, jwtHelper, $location) {
+//                $rootScope.$on('$locationChangeStart', function() {
+//                    if (!auth.isAuthenticated) {
+//                        var token = store.get('token');
+//                        if (token) {
+//                            if (!jwtHelper.isTokenExpired(token)) {
+//                                auth.authenticate(store.get('profile'), token);
+//                            } else {
+//                                $location.path('/login');
+//                            }
+//                        }
+//                    }
+//
+//                });
+//            });
+    myApp.controller("loginCtrl", function($scope, auth, store, $location){
+
+        $scope.email = "";
+        $scope.password = "";
+
+        function onLoginSuccess(profile, token) {
+            $scope.erroremsg = '';
+            store.set('profile', profile);
+            store.set('token', token);
+            $location.path('/');
+            $scope.loading = false;
+        }
+
+        function onLoginFailed() {
+            $scope.errormsg = 'invalid credentials';
+            $scope.loading = false;
+        }
+
+        $scope.reset = function() {
+            auth.reset({
+                email: 'hello@bye.com',
+                password: 'hello',
+                connection: 'Username-Password-Authentication'
+            });
+        };
+
+        $scope.submit = function () {
+            $scope.erroremsg = 'loading...';
+            $scope.loading = true;
+            auth.signin({
+                connection: 'Username-Password-Authentication',
+                username: $scope.email,
+                password: $scope.password,
+                authParams: {
+                    scope: 'openid name email'
+                }
+            }, onLoginSuccess, onLoginFailed
+            );
+
+        };
+
+
+    });
+
+    myApp.controller("logoutCtrl", function(auth, $scope, $location, store){
+        $scope.logout = function() {
+            auth.signout();
+            store.remove('profile');
+            store.remove('token');
+            $location.path('/login');
+        }
+    });
+
+    myApp.controller('rootCtrl', function (auth, $scope) {
+        $scope.auth = auth;
+        $scope.$watch('auth.profile.name', function(name) {
+            if (!name) {
+                return;
+            }
+            $scope.errormsg = 'Welcome ' + auth.profile.name + '!';
+        });
+
+    });
+
+
+
     myApp.controller("productsCtrl", function ($scope, $http) {
         $http.get("http://localhost:3000/products").success(function (myProducts) {
             $scope.products = myProducts;
-            $scope.isVisible = false;
+            $scope.isVisible = true;
 //            $scope.editMsg = false;
 
 
@@ -344,11 +257,14 @@
 
                 $http.post("http://localhost:3000/products/", data)
                         .success(function(){
-//                            $scope.PostDataResponse = data;
+                            $scope.PostDataResponse = data;
                             $scope.info = true;
                             $scope.deleteMsg = 'Product "'+ $scope.newTitle + '" was successfully added';
 
+                            $scope.$apply();
+
                         });
+
 
             };
 
@@ -367,140 +283,66 @@
         });
     });
 
-    myApp.config(['$routeProvider', function ($routeProvider) {
-
-        $routeProvider.when('/', {
-                    controller: 'productCtrl',
-                    templateUrl: '/angular/index.html'
+    myApp.config(function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
+                $routeProvider
+                        .when('/login', {
+                    templateUrl: 'views/login.html',
+                    controller: 'loginCtrl'
                 })
-                .otherwise({redirectTo: '/'});
-
-    }]);
-
-    myApp.factory("AuthService", ["$q", "$http", function ($q, $http) {
-        var user = null;
-
-        return ({
-            isLoggedIn: isLoggedIn,
-            login: login,
-            logout: logout,
-            register: register
-        });
-        function isLoggedIn() {
-            return user
-        }
-
-        function login(username, password) {
-
-            // create a new instance of deferred
-            var deferred = $q.defer();
-
-            // send a post request to the server
-            $http.post("http://localhost:3000/users", {userName: username, userPassword: password})
-                    // handle success
-
-                    .success(function (data, status) {
-                        if (status === 200 && data.result) {
-                            user = true;
-
-                            deferred.resolve();
-                        } else {
-                            user = false;
-                            deferred.reject();
-                        }
-
-                    })
-                    // handle error
-                    .error(function () {
-                        user = false;
-                        deferred.reject();
-
-                    });
-
-            // return promise object
-            return deferred.promise;
-
-        }
-
-        function logout() {
-
-            // create a new instance of deferred
-            var deferred = $q.defer();
-
-            // send a get request to the server
-            $http.get('/api/logout')
-                    // handle success
-                    .success(function (data) {
-                        user = false;
-                        deferred.resolve();
-                    })
-                    // handle error
-                    .error(function (data) {
-                        user = false;
-                        deferred.reject();
-                    });
-
-            // return promise object
-            return deferred.promise;
-
-        }
-
-        function register(username, password) {
-
-            // create a new instance of deferred
-            var deferred = $q.defer();
-
-            // send a post request to the server
-            $http.post('/api/register', {userName: username, password: password})
-                    // handle success
-                    .success(function (data, status) {
-                        if (status === 200 && data.result) {
-                            deferred.resolve();
-                        } else {
-                            deferred.reject();
-                        }
-                    })
-                    // handle error
-                    .error(function (data) {
-                        deferred.reject();
-                    });
-
-            // return promise object
-            return deferred.promise;
-
-        }
-
-
-    }]);
-
-    myApp.controller('loginController', ["$scope", "$location", "AuthService",
-        function ($scope, $location, AuthService) {
-
-            $scope.login = function () {
-                // initial values
-                $scope.error = false;
-                $scope.disabled = true;
-                // call login from service
-                AuthService.login($scope.userName.username, $scope.userPassword.password)
-                        // handle success
-                        .then(function () {
-                            $location.path('/');
-                            console.log("пользователь есть");
-                            $scope.disabled = false;
-                            $scope.userName = {};
-                        })
-                        // handle error
-                        .catch(function () {
-                            $scope.error = true;
-                            console.log("пользователя нет");
-                            $scope.errorMessage = "Invalid username and / or password";
-                            $scope.disabled = false;
-                            $scope.userName = {};
+                .when('/products', {
+                    templateUrl: 'views/products.html',
+                    controller: 'productsCtrl'
+                })
+                        .when('/', {
+                            templateUrl: 'views/root.html',
+                            controller: 'rootCtrl',
+                            /* isAuthenticated will prevent user access to forbidden routes */
+                            requiresLogin: true
                         });
+                $locationProvider.hashPrefix('!');
+                jwtInterceptorProvider.tokenGetter = ['store', function(store) {
+                    // Return the saved token
+                    return store.get('token');
+                }];
 
-            };
+                $httpProvider.interceptors.push('jwtInterceptor');
+                // ...
+//                authProvider.on('loginSuccess', function($location, profilePromise, idToken, store) {
+//                    console.log("Login Success");
+//                    profilePromise.then(function(profile) {
+//                        store.set('profile', profile);
+//                        store.set('token', idToken);
+//
+//                        console.log(profile.nickname);
+//                    });
+//                    $location.path('/');
+//                });
+//
+//                authProvider.on('loginFailure', function() {
+//                    // Error Callback
+//                });
+        authProvider.init({
+            domain: 'shs.eu.auth0.com',
+            clientID: 'HwK5uss3hhSLnxVGKhupm4z8QG2E3jcy',
+            // Here include the URL to redirect to if the user tries to access a resource when not authenticated.
+            loginUrl: '/login'
+        });
+    })
+            .run(function($rootScope, auth, store, jwtHelper, $location) {
+                $rootScope.$on('$locationChangeStart', function() {
+                    if (!auth.isAuthenticated) {
+                        var token = store.get('token');
+                        if (token) {
+                            if (!jwtHelper.isTokenExpired(token)) {
+                                auth.authenticate(store.get('profile'), token);
+                            } else {
+                                $location.path('/login');
+                            }
+                        }
+                    }
 
-        }]);
+                });
+            });
 </script>
 </body>
 </html>

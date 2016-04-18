@@ -1,0 +1,77 @@
+<div class="container">
+    <!--<label><input type="checkbox" ng-model="test" ng-change="ShowHide()"/>Show Main panel</label>-->
+    <div class="alert alert-success " ng-show="info">{{deleteMsg}}</div>
+    <div class="row flex-row" ng-if="isVisible">
+        <div class="col-sm-6 col-md-4 ">
+            <div class="thumbnail">
+                <a href="" data-toggle="modal" data-target="#myModal"><i class="centerFa fa fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 " ng-repeat="product in products">
+
+            <div class="thumbnail">
+                <img ng-src="{{product.img}}" alt="">
+                <div class="caption">
+                    <h3>{{product.title}}</h3>
+                    <p class="description flex-text text-muted">{{product.description}}</p>
+                    <p class="btn-thumb">
+                        <button class="btn btn-info" ng-click="viewProduct(product)">View</button>
+                        <button class="btn btn-default" data-toggle="modal" ng-click="copyProduct(product)"
+                                data-target="#modal-{{product.id}}">Edit
+                        </button>
+                        <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
+                            Delete
+                        </button>
+                    </p>
+                    <div class="modal fade" id="modal-{{product.id}}" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close"
+                                            data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Editor</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-info alert-dismissable">
+                                        <a class="panel-close close" data-dismiss="alert">×</a>
+                                        <i class="fa fa-coffee"></i>
+                                        This is an <strong>.alert</strong>. Use this to show important
+                                        messages to the user.
+                                    </div>
+                                    <h3 class="modal-header">{{product.title}}</h3>
+                                    <form name="form" class="form-horizontal" role="form" novalidate>
+                                        <div class="form-group">
+                                            <label class="col-lg-3 control-label">Title:</label>
+                                            <div class="col-lg-8">
+                                                <input class="form-control" ng-model="product.title" type="text"
+                                                       value="{{form}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-lg-3 control-label">Description:</label>
+                                            <div class="col-lg-8">
+                                                <textarea class="form-control" ng-model="product.description" rows="10" value="{{form}}"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label"></label>
+                                            <div class="col-md-8">
+                                                <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveProduct(product)"
+                                                       value="Save Changes">
+                                                <span></span>
+                                                <button class="btn btn-default" data-dismiss="modal"
+                                                        ng-click="reset(product)">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
