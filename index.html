@@ -108,7 +108,7 @@
 
 <footer ng-controller="loginCtrl">
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
-        <div class="container footer">
+        <div class="container footer" ng-controller="logoutCtrl">
             <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!login" ng-click="logout()"> Logout !</a></p>
         </div>
     </nav>
@@ -119,63 +119,25 @@
 
 <script type="text/javascript">
 
-    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt"]);
-//            .run(function($rootScope, auth, store, jwtHelper, $location) {
-//                $rootScope.$on('$locationChangeStart', function() {
-//                    if (!auth.isAuthenticated) {
-//                        var token = store.get('token');
-//                        if (token) {
-//                            if (!jwtHelper.isTokenExpired(token)) {
-//                                auth.authenticate(store.get('profile'), token);
-//                            } else {
-//                                $location.path('/login');
-//                            }
-//                        }
-//                    }
-//
-//                });
-//            });
-    myApp.controller("loginCtrl", function($scope, auth, store, $location){
-
-        $scope.email = "";
-        $scope.password = "";
-
-        function onLoginSuccess(profile, token) {
-            $scope.erroremsg = '';
-            store.set('profile', profile);
-            store.set('token', token);
-            $location.path('/');
-            $scope.loading = false;
-        }
-
-        function onLoginFailed() {
-            $scope.errormsg = 'invalid credentials';
-            $scope.loading = false;
-        }
-
-        $scope.reset = function() {
-            auth.reset({
-                email: 'hello@bye.com',
-                password: 'hello',
-                connection: 'Username-Password-Authentication'
-            });
-        };
-
-        $scope.submit = function () {
-            $scope.erroremsg = 'loading...';
-            $scope.loading = true;
-            auth.signin({
-                connection: 'Username-Password-Authentication',
-                username: $scope.email,
-                password: $scope.password,
-                authParams: {
-                    scope: 'openid name email'
+    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt"])
+    .run(function($rootScope, auth, store, jwtHelper, $location) {
+        // This events gets triggered on refresh or URL change
+        $rootScope.$on('$locationChangeStart', function() {
+            var token = store.get('token');
+            if (token) {
+                if (!jwtHelper.isTokenExpired(token)) {
+                    if (!auth.isAuthenticated) {
+                        auth.authenticate(store.get('profile'), token);
+                    }
+                } else {
+                    // Either show the login page or use the refresh token to get a new idToken
+                    $location.path('/');
                 }
-            }, onLoginSuccess, onLoginFailed
-            );
-
-        };
-
+            }
+        });
+    });
+    myApp.controller("loginCtrl", function($scope, auth, store, $location){
+        $scope.auth = auth;
 
     });
 
@@ -188,16 +150,6 @@
         }
     });
 
-    myApp.controller('rootCtrl', function (auth, $scope) {
-        $scope.auth = auth;
-        $scope.$watch('auth.profile.name', function(name) {
-            if (!name) {
-                return;
-            }
-            $scope.errormsg = 'Welcome ' + auth.profile.name + '!';
-        });
-
-    });
 
 
 
@@ -284,22 +236,7 @@
     });
 
     myApp.config(function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
-                $routeProvider
-                        .when('/login', {
-                    templateUrl: 'views/login.html',
-                    controller: 'loginCtrl'
-                })
-                .when('/products', {
-                    templateUrl: 'views/products.html',
-                    controller: 'productsCtrl'
-                })
-                        .when('/', {
-                            templateUrl: 'views/root.html',
-                            controller: 'rootCtrl',
-                            /* isAuthenticated will prevent user access to forbidden routes */
-                            requiresLogin: true
-                        });
-                $locationProvider.hashPrefix('!');
+
                 jwtInterceptorProvider.tokenGetter = ['store', function(store) {
                     // Return the saved token
                     return store.get('token');
@@ -307,41 +244,49 @@
 
                 $httpProvider.interceptors.push('jwtInterceptor');
                 // ...
-//                authProvider.on('loginSuccess', function($location, profilePromise, idToken, store) {
-//                    console.log("Login Success");
-//                    profilePromise.then(function(profile) {
-//                        store.set('profile', profile);
-//                        store.set('token', idToken);
-//
-//                        console.log(profile.nickname);
-//                    });
-//                    $location.path('/');
-//                });
-//
-//                authProvider.on('loginFailure', function() {
-//                    // Error Callback
-//                });
-        authProvider.init({
-            domain: 'shs.eu.auth0.com',
-            clientID: 'HwK5uss3hhSLnxVGKhupm4z8QG2E3jcy',
-            // Here include the URL to redirect to if the user tries to access a resource when not authenticated.
-            loginUrl: '/login'
-        });
-    })
-            .run(function($rootScope, auth, store, jwtHelper, $location) {
-                $rootScope.$on('$locationChangeStart', function() {
-                    if (!auth.isAuthenticated) {
-                        var token = store.get('token');
-                        if (token) {
-                            if (!jwtHelper.isTokenExpired(token)) {
-                                auth.authenticate(store.get('profile'), token);
-                            } else {
-                                $location.path('/login');
-                            }
-                        }
-                    }
-
+                authProvider.on('loginSuccess', function($location, profilePromise, idToken, store) {
+                    console.log("Login Success");
+                    profilePromise.then(function(profile) {
+                        store.set('profile', profile);
+                        store.set('token', idToken);
+                    });
+                    $location.path('/');
                 });
+
+                authProvider.on('loginFailure', function() {
+                    // Error Callback
+                });
+                $routeProvider
+                        .when('/login', {
+                    templateUrl: 'views/login.html',
+                    controller: 'loginCtrl'
+                })
+                .when('/products', {
+                    templateUrl: 'views/products.html',
+                    controller: 'productsCtrl',
+                    requiresLogin: true
+
+                })
+                        .when('/', {
+                            templateUrl: 'views/login.html',
+                            controller: 'loginCtrl'
+                            /* isAuthenticated will prevent user access to forbidden routes */
+                        });
+
+                $locationProvider.hashPrefix('!');
+
+
+                authProvider.init({
+                    domain: 'shs.eu.auth0.com',
+                    clientID: 'HwK5uss3hhSLnxVGKhupm4z8QG2E3jcy',
+                    callbackURL: location.href,
+                    // Here include the URL to redirect to if the user tries to access a resource when not authenticated.
+                    loginUrl: '/login'
+                });
+            })
+            .run(function(auth) {
+                // This hooks al auth events to check everything as soon as the app starts
+                auth.hookEvents();
             });
 </script>
 </body>
