@@ -20,15 +20,16 @@
     <script type="text/javascript" src="//cdn.rawgit.com/auth0/angular-storage/master/dist/angular-storage.js"></script>
     <script type="text/javascript" src="//cdn.rawgit.com/auth0/angular-jwt/master/dist/angular-jwt.js"></script>
 
-    <script src="//cdn.auth0.com/w2/auth0-angular-4.js"> </script>
+    <script src="//cdn.auth0.com/w2/auth0-angular-4.js"></script>
+
+    <base href="/angular/">
 
 
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 </head>
 <body ng-cloak>
 <header>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="menuCtrl">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -42,10 +43,9 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <!--<li class="active"><a href="" ng-click="logout()">Logout</a></li>-->
-
+                    <li><a href="" ng-click="go('/login')">Login/Registration</a></li>
+                    <li><a href="" ng-click="go('/about')">About</a></li>
+                    <li><a href="" ng-click="go('/products')">Products</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -55,9 +55,9 @@
 
 <div class="top-content" ng-controller="loginCtrl">
     <div class="products" ng-controller="productsCtrl">
-    <div class="inner-bg">
-        <div ng-view>
-        </div>
+        <div class="inner-bg">
+            <div ng-view>
+            </div>
 
 
             <div class="modal fade" id="myModal" role="dialog">
@@ -72,24 +72,28 @@
                                 <div class="form-group">
                                     <label class="col-lg-3 control-label">Title:</label>
                                     <div class="col-lg-8">
-                                        <input class="form-control" ng-required="true" name="newTitle" ng-model="newTitle" type="text"
-                                              >
+                                        <input class="form-control" ng-required="true" name="newTitle"
+                                               ng-model="newTitle" type="text"
+                                        >
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-lg-3 control-label">Description:</label>
                                     <div class="col-lg-8">
-                                        <textarea class="form-control" name="newDescription"  ng-model="newDescription" rows="10"></textarea>
+                                        <textarea class="form-control" name="newDescription" ng-model="newDescription"
+                                                  rows="10"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label"></label>
                                     <div class="col-md-8">
-                                        <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addProduct()"
+                                        <input type="button" class="btn btn-primary" data-dismiss="modal"
+                                               ng-click="addProduct()"
                                                value="Add Product">
                                         <span></span>
                                         <button class="btn btn-default" data-dismiss="modal"
-                                                ng-click="reset(product)">Cancel</button>
+                                                ng-click="reset(product)">Cancel
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -103,13 +107,12 @@
 </div>
 
 
-
-
-
 <footer ng-controller="loginCtrl">
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
         <div class="container footer" ng-controller="logoutCtrl">
-            <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!login" ng-click="logout()"> Logout !</a></p>
+            <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!/login"
+                                                                                            ng-click="logout()"> Logout
+                !</a></p>
         </div>
     </nav>
 </footer>
@@ -120,38 +123,59 @@
 <script type="text/javascript">
 
     var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt"])
-    .run(function($rootScope, auth, store, jwtHelper, $location) {
-        // This events gets triggered on refresh or URL change
-        $rootScope.$on('$locationChangeStart', function() {
-            var token = store.get('token');
-            if (token) {
-                if (!jwtHelper.isTokenExpired(token)) {
-                    if (!auth.isAuthenticated) {
-                        auth.authenticate(store.get('profile'), token);
+            .run(function ($rootScope, auth, store, jwtHelper, $location) {
+                // This events gets triggered on refresh or URL change
+                $rootScope.$on('$locationChangeStart', function () {
+                    var token = store.get('token');
+                    if (token) {
+                        if (!jwtHelper.isTokenExpired(token)) {
+                            if (!auth.isAuthenticated) {
+                                auth.authenticate(store.get('profile'), token);
+                            }
+                        } else {
+                            // Either show the login page or use the refresh token to get a new idToken
+                            $location.path('/about');
+                        }
                     }
-                } else {
-                    // Either show the login page or use the refresh token to get a new idToken
-                    $location.path('/');
-                }
-            }
-        });
-    });
-    myApp.controller("loginCtrl", function($scope, auth, store, $location){
+                });
+            });
+    myApp.controller("loginCtrl", function ($scope, auth, store, $location) {
         $scope.auth = auth;
 
     });
 
-    myApp.controller("logoutCtrl", function(auth, $scope, $location, store){
-        $scope.logout = function() {
+    myApp.controller("aboutCtrl", function ($scope, auth) {
+//        $scope.auth = auth;
+    });
+
+    myApp.controller("logoutCtrl", function (auth, $scope, $location, store) {
+        $scope.logout = function () {
             auth.signout();
-            store.remove('profile');
-            store.remove('token');
-            $location.path('/login');
+            store.remove("profile");
+            store.remove("token");
+            $location.path("/login");
         }
     });
 
+    myApp.controller("menuCtrl", function ($scope, $location) {
+        $scope.go = function (target) {
+            $location.path(target);
+        };
+    });
 
+    myApp.controller("productCtrl", function ($scope, $http, $routeParams) {
 
+        $http ({
+            url: "http://localhost:3000/products/",
+            method: "get",
+            params: {
+                id:$routeParams.id
+            }
+        })
+                .success(function(){
+                    $scope.product = $scope.products[$routeParams.id - 1];
+                })
+    });
 
     myApp.controller("productsCtrl", function ($scope, $http) {
         $http.get("http://localhost:3000/products").success(function (myProducts) {
@@ -160,42 +184,50 @@
 //            $scope.editMsg = false;
 
 
-
             $scope.ShowHide = function () {
                 $scope.isVisible = $scope.test;
             };
-            $scope.viewProduct = function (product) {
-                $http.get("http://localhost:3000/products/" + product.id)
-                        .success(function () {
-
-                            console.log(product.title);
-                        })
-                        .error(function () {
-
-                        });
-            };
+//            $scope.viewProduct = function (product) {
+//                $http ({
+//                    url: "http://localhost:3000/products/" + product.id,
+//                    params: {
+//                        id:$routeParams.id
+//                    },
+//                            method: "get"
+//
+//                        })
+//                                .success(function(){
+//                                    $scope.product = {
+//                                        title: "Привет"
+//                                    };
+//                                    console.log(product.id + " testing router")
+//                                })
+//                        .error(function () {
+//
+//                        });
+//            };
             $scope.deleteProduct = function (product) {
                 $http.delete("http://localhost:3000/products/" + product.id)
                         .success(function () {
                             var index = $scope.products.indexOf(product);
                             $scope.info = true;
                             $scope.products.splice(index, 1);
-                            $scope.deleteMsg = 'Product  "'+ product.title + '" was successfully deleted';
+                            $scope.deleteMsg = 'Product  "' + product.title + '" was successfully deleted';
                             console.log($scope.products);
                         })
                         .error(function () {
 
                         });
             };
-            $scope.saveProduct = function(product){
+            $scope.saveProduct = function (product) {
                 $http.put("http://localhost:3000/products/" + product.id, {
-                    title: product.title,
-                    description: product.description,
-                    img: product.img
-                })
-                        .success(function(){
+                            title: product.title,
+                            description: product.description,
+                            img: product.img
+                        })
+                        .success(function () {
                             $scope.info = true;
-                            $scope.deleteMsg = 'Product "'+ product.title + '" was successfully updated';
+                            $scope.deleteMsg = 'Product "' + product.title + '" was successfully updated';
 
                         });
 
@@ -208,10 +240,10 @@
                 };
 
                 $http.post("http://localhost:3000/products/", data)
-                        .success(function(){
+                        .success(function () {
                             $scope.PostDataResponse = data;
                             $scope.info = true;
-                            $scope.deleteMsg = 'Product "'+ $scope.newTitle + '" was successfully added';
+                            $scope.deleteMsg = 'Product "' + $scope.newTitle + '" was successfully added';
 
                             $scope.$apply();
 
@@ -220,13 +252,13 @@
 
             };
 
-            $scope.copyProduct = function(product){
+            $scope.copyProduct = function (product) {
                 $scope.form = angular.copy(product);
                 console.log($scope.form)
             };
 
-            $scope.reset = function(product){
-               product.title = $scope.form.title;
+            $scope.reset = function (product) {
+                product.title = $scope.form.title;
                 product.description = $scope.form.description;
                 product.img = $scope.form.img;
                 $scope.info = true;
@@ -237,43 +269,61 @@
 
     myApp.config(function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
 
-                jwtInterceptorProvider.tokenGetter = ['store', function(store) {
+
+                jwtInterceptorProvider.tokenGetter = ["store", function (store) {
                     // Return the saved token
-                    return store.get('token');
+                    return store.get("token");
                 }];
 
-                $httpProvider.interceptors.push('jwtInterceptor');
+                $httpProvider.interceptors.push("jwtInterceptor");
                 // ...
-                authProvider.on('loginSuccess', function($location, profilePromise, idToken, store) {
+                authProvider.on("loginSuccess", function ($location, profilePromise, idToken, store) {
                     console.log("Login Success");
-                    profilePromise.then(function(profile) {
+                    profilePromise.then(function (profile) {
                         store.set('profile', profile);
                         store.set('token', idToken);
                     });
-                    $location.path('/');
+                    $location.path("/products");
                 });
 
-                authProvider.on('loginFailure', function() {
-                    // Error Callback
+                authProvider.on("loginFailure/", function (err) {
+                    console.log("Something went wrong" + err);
                 });
                 $routeProvider
-                        .when('/login', {
-                    templateUrl: 'views/login.html',
-                    controller: 'loginCtrl'
-                })
-                .when('/products', {
-                    templateUrl: 'views/products.html',
-                    controller: 'productsCtrl',
-                    requiresLogin: true
+                        .when("/login/", {
+                            templateUrl: "views/login.html",
+                            controller: "loginCtrl"
+                        })
+                        .when("/products/", {
+                            templateUrl: "views/products.html",
+                            controller: "productsCtrl",
+                            requiresLogin: true
 
-                })
-                        .when('/', {
-                            templateUrl: 'views/login.html',
-                            controller: 'loginCtrl'
+                        })
+                        .when("/", {
+                            templateUrl: "views/about.html",
+                            controller: "aboutCtrl"
+                            /* isAuthenticated will prevent user access to forbidden routes */
+                        })
+                        .when("/about/", {
+                            templateUrl: "views/about.html",
+                            controller: "aboutCtrl"
+                            /* isAuthenticated will prevent user access to forbidden routes */
+                        })
+                        .when("/products/:id", {
+                            templateUrl: "views/product.html",
+                            controller: "productCtrl",
+                            requiresLogin: true
                             /* isAuthenticated will prevent user access to forbidden routes */
                         });
+//                        .otherwise({
+//                            redirectTo: "/about"
+//                        });
 
-                $locationProvider.hashPrefix('!');
+
+                $locationProvider
+                        .html5Mode(false)
+                        .hashPrefix('!');
 
 
                 authProvider.init({
@@ -281,13 +331,63 @@
                     clientID: 'HwK5uss3hhSLnxVGKhupm4z8QG2E3jcy',
                     callbackURL: location.href,
                     // Here include the URL to redirect to if the user tries to access a resource when not authenticated.
-                    loginUrl: '/login'
+                    loginUrl: '/about'
+
                 });
+
             })
-            .run(function(auth) {
+            .run(function (auth) {
                 // This hooks al auth events to check everything as soon as the app starts
                 auth.hookEvents();
             });
+
+    myApp. directive('tabs', function() {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: {},
+            controller: [ "$scope", function($scope) {
+                var panes = $scope.panes = [];
+
+                $scope.select = function(pane) {
+                    angular.forEach(panes, function(pane) {
+                        pane.selected = false;
+                    });
+                    pane.selected = true;
+                }
+
+                this.addPane = function(pane) {
+                    if (panes.length == 0) $scope.select(pane);
+                    panes.push(pane);
+                }
+            }],
+            template:
+            '<div class="tabbable">' +
+            '<ul class="nav nav-tabs">' +
+            '<li ng-repeat="pane in panes" ng-class="{active:pane.selected}">'+
+            '<a href="" ng-click="select(pane)">{{pane.title}}</a>' +
+            '</li>' +
+            '</ul>' +
+            '<div class="tab-content" ng-transclude></div>' +
+            '</div>',
+            replace: true
+        };
+    }).
+    directive('pane', function() {
+        return {
+            require: '^tabs',
+            restrict: 'E',
+            transclude: true,
+            scope: { title: '@' },
+            link: function(scope, element, attrs, tabsCtrl) {
+                tabsCtrl.addPane(scope);
+            },
+            template:
+            '<div class="tab-pane" ng-class="{active: selected}" ng-transclude>' +
+            '</div>',
+            replace: true
+        };
+    })
 </script>
 </body>
 </html>
