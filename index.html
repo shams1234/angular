@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Angular</title>
+
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
     <script src="js/angular.js"></script>
     <script src="js/ngRoute.js"></script>
     <script src="js/ngAnimate.js"></script>
+    <script src="js/ui-bootstrap-tpls-1.3.2.min.js"></script>
 
     <!-- We use client cookies to save the user credentials -->
     <script src="//code.angularjs.org/1.2.16/angular-cookies.min.js"></script>
@@ -30,10 +33,9 @@
 <body ng-cloak>
 <header>
     <nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="menuCtrl">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
+        <div class="container" ng-controller="collapseCtrl">
+            <div class="navbar-header" >
+                <button type="button" class="navbar-toggle collapsed" ng-click="isCollapsed = !isCollapsed">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -41,11 +43,11 @@
                 </button>
                 <a class="navbar-brand" href="#">Angular</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
+            <div uib-collapse="isCollapsed">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="" ng-click="go('/login')">Login/Registration</a></li>
                     <li><a href="" ng-click="go('/about')">About</a></li>
                     <li><a href="" ng-click="go('/products')">Products</a></li>
+                    <li><a href="" ng-click="go('/login')">Login/Registration</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -58,8 +60,6 @@
         <div class="inner-bg">
             <div ng-view>
             </div>
-
-
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -109,39 +109,139 @@
 
 <footer ng-controller="loginCtrl">
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
-        <div class="container footer" ng-controller="logoutCtrl">
-            <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!/login"
-                                                                                            ng-click="logout()"> Logout
-                !</a></p>
+        <div class="container" ng-controller="logoutCtrl">
+            <div class="footer">
+                <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!/login"
+                                                                                                ng-click="logout()"> Logout
+                    !</a></p>
+            </div>
+
         </div>
     </nav>
 </footer>
 
 <script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
-    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt"])
+    var myApp = angular.module("myApp", ["ngRoute", "ngAnimate", "auth0", "angular-storage", "angular-jwt", "ui.bootstrap"])
             .run(function ($rootScope, auth, store, jwtHelper, $location) {
                 // This events gets triggered on refresh or URL change
-                $rootScope.$on('$locationChangeStart', function () {
-                    var token = store.get('token');
+                $rootScope.$on("$locationChangeStart", function () {
+                    var token = store.get("token");
                     if (token) {
                         if (!jwtHelper.isTokenExpired(token)) {
                             if (!auth.isAuthenticated) {
-                                auth.authenticate(store.get('profile'), token);
+                                auth.authenticate(store.get("profile"), token);
                             }
                         } else {
                             // Either show the login page or use the refresh token to get a new idToken
-                            $location.path('/about');
+                            $location.path("/about");
                         }
                     }
                 });
             });
+
+    myApp.controller("collapseCtrl", function ($scope) {
+        $scope.isCollapsed = false;
+    });
+
+    myApp.controller("tabsCtrl", function ($scope) {
+        $scope.tabs = [
+//            { title:'Dynamic Title 1', content:'Dynamic content 1'},
+//            { title:'Dynamic Title 2', content:'Dynamic content 2'}
+        ];
+
+        $scope.model = {
+            name: "Tabs"
+        };
+    });
+
+    myApp.controller("ratingReviewCtrl", function ($scope) {
+        $scope.rate = $scope.review.ratingValue;
+        $scope.max = 5;
+        $scope.percent = 100 * ($scope.rate / $scope.max);
+        $scope.isReadonly = true;
+
+//        $scope.hoveringOver = function(value) {
+//            $scope.overStar = value;
+//
+//        };
+
+    });
+
+//    myApp.controller("alertCtrl", function ($scope) {
+//        $scope.alerts = [
+//            { type: "danger", msg: "Oh snap! Change a few things up and try submitting again." },
+//            { type: "success", msg: "Well done! You successfully read this important alert message." }
+//        ];
+//
+//        $scope.addAlert = function() {
+//            $scope.alerts.push({msg: "Another alert!"});
+//        };
+//
+//        $scope.closeAlert = function(index) {
+//            $scope.alerts.splice(index, 1);
+//        };
+//    });
+
+    myApp.controller("modalCtrl", function ($scope, $uibModal, $log) {
+
+        $scope.items = $scope.products;
+
+
+        $scope.animationsEnabled = true;
+
+        $scope.open = function (size) {
+
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: "myModalContent.html",
+                controller: "modalInstanceCtrl",
+                scope: $scope,
+                size: size,
+                resolve: {
+                    items: function () {
+                        return $scope.items;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.toggleAnimation = function () {
+            $scope.animationsEnabled = !$scope.animationsEnabled;
+        };
+
+    });
+
+    // Please note that $uibModalInstance represents a modal window (instance) dependency.
+    // It is not the same as the $uibModal service used above.
+
+    myApp.controller("modalInstanceCtrl", function ($scope, $uibModalInstance, items) {
+
+        $scope.items = items;
+        $scope.selected = {
+            item: $scope.items[0]
+        };
+
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.selected.item);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+
+
     myApp.controller("loginCtrl", function ($scope, auth, store, $location) {
         $scope.auth = auth;
-
     });
 
     myApp.controller("aboutCtrl", function ($scope, auth) {
@@ -149,6 +249,7 @@
     });
 
     myApp.controller("logoutCtrl", function (auth, $scope, $location, store) {
+
         $scope.logout = function () {
             auth.signout();
             store.remove("profile");
@@ -184,35 +285,17 @@
 //            $scope.editMsg = false;
 
 
-            $scope.ShowHide = function () {
-                $scope.isVisible = $scope.test;
-            };
-//            $scope.viewProduct = function (product) {
-//                $http ({
-//                    url: "http://localhost:3000/products/" + product.id,
-//                    params: {
-//                        id:$routeParams.id
-//                    },
-//                            method: "get"
-//
-//                        })
-//                                .success(function(){
-//                                    $scope.product = {
-//                                        title: "Привет"
-//                                    };
-//                                    console.log(product.id + " testing router")
-//                                })
-//                        .error(function () {
-//
-//                        });
+//            $scope.ShowHide = function () {
+//                $scope.isVisible = $scope.test;
 //            };
+//
             $scope.deleteProduct = function (product) {
                 $http.delete("http://localhost:3000/products/" + product.id)
                         .success(function () {
                             var index = $scope.products.indexOf(product);
                             $scope.info = true;
                             $scope.products.splice(index, 1);
-                            $scope.deleteMsg = 'Product  "' + product.title + '" was successfully deleted';
+                            $scope.deleteMsg = 'Product  "' + product.productName + '" was successfully deleted';
                             console.log($scope.products);
                         })
                         .error(function () {
@@ -221,13 +304,13 @@
             };
             $scope.saveProduct = function (product) {
                 $http.put("http://localhost:3000/products/" + product.id, {
-                            title: product.title,
+                            title: product.productName,
                             description: product.description,
                             img: product.img
                         })
                         .success(function () {
                             $scope.info = true;
-                            $scope.deleteMsg = 'Product "' + product.title + '" was successfully updated';
+                            $scope.deleteMsg = 'Product "' + product.productName + '" was successfully updated';
 
                         });
 
@@ -252,18 +335,18 @@
 
             };
 
-            $scope.copyProduct = function (product) {
-                $scope.form = angular.copy(product);
-                console.log($scope.form)
-            };
-
-            $scope.reset = function (product) {
-                product.title = $scope.form.title;
-                product.description = $scope.form.description;
-                product.img = $scope.form.img;
-                $scope.info = true;
-                $scope.deleteMsg = 'Product "' + product.title + '" was not updated';
-            };
+//            $scope.copyProduct = function (product) {
+//                $scope.form = angular.copy(product);
+//                console.log($scope.form)
+//            };
+//
+//            $scope.reset = function (product) {
+//                product.productName = $scope.form.title;
+//                product.description = $scope.form.description;
+//                product.img = $scope.form.img;
+//                $scope.info = true;
+//                $scope.deleteMsg = 'Product "' + product.productName + '" was not updated';
+//            };
         });
     });
 
@@ -340,54 +423,6 @@
                 // This hooks al auth events to check everything as soon as the app starts
                 auth.hookEvents();
             });
-
-    myApp. directive('tabs', function() {
-        return {
-            restrict: 'E',
-            transclude: true,
-            scope: {},
-            controller: [ "$scope", function($scope) {
-                var panes = $scope.panes = [];
-
-                $scope.select = function(pane) {
-                    angular.forEach(panes, function(pane) {
-                        pane.selected = false;
-                    });
-                    pane.selected = true;
-                }
-
-                this.addPane = function(pane) {
-                    if (panes.length == 0) $scope.select(pane);
-                    panes.push(pane);
-                }
-            }],
-            template:
-            '<div class="tabbable">' +
-            '<ul class="nav nav-tabs">' +
-            '<li ng-repeat="pane in panes" ng-class="{active:pane.selected}">'+
-            '<a href="" ng-click="select(pane)">{{pane.title}}</a>' +
-            '</li>' +
-            '</ul>' +
-            '<div class="tab-content" ng-transclude></div>' +
-            '</div>',
-            replace: true
-        };
-    }).
-    directive('pane', function() {
-        return {
-            require: '^tabs',
-            restrict: 'E',
-            transclude: true,
-            scope: { title: '@' },
-            link: function(scope, element, attrs, tabsCtrl) {
-                tabsCtrl.addPane(scope);
-            },
-            template:
-            '<div class="tab-pane" ng-class="{active: selected}" ng-transclude>' +
-            '</div>',
-            replace: true
-        };
-    })
 </script>
 </body>
 </html>

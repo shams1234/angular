@@ -3,9 +3,11 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     font-weight: 300;
-    color: #888;
+    color: #F5F5F5;
     line-height: 30px;
-    text-align: center;
+	background-color: cadetblue
+/*text-align: center;*/
+
 }
 
 
@@ -37,6 +39,13 @@ img { max-width: 100%; }
 ::-moz-selection { background: #19b9e7; color: #fff; text-shadow: none; }
 ::selection { background: #19b9e7; color: #fff; text-shadow: none; }
 
+.login-header {
+	text-align: center;
+}
+
+.link:hover {
+	text-decoration: underline;
+}
 
 .btn-link-1 {
 	display: inline-block;
@@ -63,6 +72,14 @@ img { max-width: 100%; }
 	line-height: 20px;
 }
 
+.form-group {
+	color: black;
+}
+
+.modal-title {
+	color: black;
+}
+
 .btn-link-2 {
 	display: inline-block;
 	height: 50px;
@@ -76,7 +93,7 @@ img { max-width: 100%; }
     color: #fff;
     -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
 }
-.btn-link-2:hover, .btn-link-2:focus, 
+.btn-link-2:hover, .btn-link-2:focus,
 .btn-link-2:active, .btn-link-2:active:focus { outline: 0; opacity: 0.6; background: rgba(0, 0, 0, 0.3); color: #fff; }
 
 .btn-link-2 i {
@@ -86,6 +103,9 @@ img { max-width: 100%; }
 	line-height: 20px;
 }
 
+.about-container {
+	text-align: center;
+}
 
 /***** Top content *****/
 
@@ -196,13 +216,9 @@ footer {
 	color: #fff;
 }
 
-footer .footer-border {
-	width: 200px;
-	margin: 0 auto;
-	padding-bottom: 30px;
-	border-top: 1px solid #fff;
-	border-top: 1px solid rgba(255, 255, 255, 0.6);
+ .footer {
     text-align: center;
+	 line-height: 45px;
 }
 
 .navbar-text > p {
@@ -317,4 +333,46 @@ i.centerFa.fa.fa-plus:hover {
 	color: white;
 	text-align: left;
 	margin-top: 20px;
+}
+
+.product-tabs {
+	background-color: white;
+	color: black;
+	font-size: 13px;
+	padding: 9px;
+	border-radius: 0 0 5px 5px ;
+}
+
+.reviewer{
+	font-weight: bold;
+}
+
+.reviewer-name {
+	font-weight: normal;
+}
+
+
+.bestReviews {
+	border-radius: 0 0 5px 5px;
+	border: 1px solid cadetblue;
+	margin-top: 15px;
+	padding: 10px;
+}
+
+.reviewTitle {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+.reviewInfo {
+	border-bottom: 1px solid rgba(95, 158, 160, 0.3);
+}
+
+.time {
+	text-align: right;
+	color: #777;
+}
+
+.alert.alert-success {
+	text-align: center;
 }

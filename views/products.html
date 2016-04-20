@@ -5,6 +5,7 @@
         <label for="product">Search:</label>
         <input type="text" class="form-control" id="product" ng-model="searchProduct" placeholder="Search Product">
     </div>
+
     <div class="row flex-row" ng-if="isVisible">
 
         <div class="col-sm-6 col-md-4 ">
@@ -18,63 +19,51 @@
             <div class="thumbnail">
                 <img ng-src="{{product.img}}" alt="">
                 <div class="caption" ng-controller="menuCtrl">
-                    <h3>{{product.title}}</h3>
+                    <h3>{{product.productName}}</h3>
                     <p class="description flex-text text-muted">{{product.description}}</p>
-                    <p class="btn-thumb">
-                        <a href="#!/products/{{$index + 1}}" class="btn btn-info" ng-click="viewProduct(product)">View</a>
-                        <button class="btn btn-default" data-toggle="modal" ng-click="copyProduct(product)"
-                                data-target="#modal-{{product.id}}">Edit
-                        </button>
-                        <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
-                            Delete
-                        </button>
-                    </p>
-                    <div class="modal fade" id="modal-{{product.id}}" role="dialog">
-                        <div class="modal-dialog">
 
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close"
-                                            data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Editor</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="alert alert-info alert-dismissable">
-                                        <a class="panel-close close" data-dismiss="alert">×</a>
-                                        <i class="fa fa-coffee"></i>
-                                        This is an <strong>.alert</strong>. Use this to show important
-                                        messages to the user.
-                                    </div>
-                                    <h3 class="modal-header">{{product.title}}</h3>
-                                    <form name="form" class="form-horizontal" role="form" novalidate>
-                                        <div class="form-group">
-                                            <label class="col-lg-3 control-label">Title:</label>
-                                            <div class="col-lg-8">
-                                                <input class="form-control" ng-model="product.title" type="text"
-                                                       value="{{form}}">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-lg-3 control-label">Description:</label>
-                                            <div class="col-lg-8">
-                                                <textarea class="form-control" ng-model="product.description" rows="10" value="{{form}}"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label"></label>
-                                            <div class="col-md-8">
-                                                <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveProduct(product)"
-                                                       value="Save Changes">
-                                                <span></span>
-                                                <button class="btn btn-default" data-dismiss="modal"
-                                                        ng-click="reset(product)">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+
+                    <div ng-controller="modalCtrl">
+                        <script type="text/ng-template" id="myModalContent.html">
+                            <div class="modal" id="modal"></div>
+                            <div class="modal-header">
+
+                                <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">×</span></button>
+                                <h3 class="modal-title">Update Product :</h3>
                             </div>
-                        </div>
+                            <div class="modal-body">
+                                <form name="form" class="form-horizontal" role="form" novalidate>
+                                    <div class="form-group">
+                                        <label class="col-lg-3 control-label">Title:</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" ng-model="product.productName" type="text"
+                                                   value="{{form}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-3 control-label">Description:</label>
+                                        <div class="col-lg-8">
+                                            <textarea class="form-control" ng-model="product.description" rows="10" value="{{form}}"></textarea>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" type="button" ng-click="saveProduct(product); ok()">Update</button>
+                                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                            </div>
+                        </script>
+                        <p class="btn-thumb">
+                            <a href="#!/products/{{$index + 1}}" class="btn btn-info" ng-click="viewProduct(product)">View</a>
+                            <button type="button" class="btn btn-default" ng-click="open('lg')" >Edit!</button>
+                            <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
+                                Delete
+                            </button>
+                        </p>
+
+                    </div>
+
                     </div>
                 </div>
             </div>

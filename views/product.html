@@ -1,43 +1,96 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <img ng-src="{{product.img}}" alt="{{product.title}}">
+        <div class="col-md-5">
+            <img ng-src="{{product.img}}" alt="{{product.productName}}">
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="row">
                 <div class="col-md-12">
                     <!-- Nav tabs -->
-                    <h2 class="productTitle">{{product.title}}</h2>
-                    <tabs>
-                        <pane title="Description">
-                            <div class="description">{{product.description}}</div>
-                        </pane>
-                        <pane title="Features">
-                            <div class="features">This is the content of the second tab.</div>
-                        </pane>
-                        <pane title="Reviews">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <span class="sr-only">Four out of Five Stars</span>
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-                                    <span class="label label-success">61</span>
+                    <h2 class="productTitle">{{product.productName}}</h2>
+
+                    <div ng-controller="tabsCtrl">
+
+                        <uib-tabset active="active">
+                                <uib-tab index="0" heading="Description"><div class="product-tabs">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                    <div class="price"><span >Price : </span>{{product.productPrice}}</div>
+                                    <div class="bestRating"><span >Best Rating : </span>{{product.bestRating}}</div>
+                                    <div class="worstRating"><span >Worst Rating : </span>{{product.worstRating}}</div>
                                 </div>
-                                <div class="col-md-6">
-                                    <span class="monospaced">Write a Review</span>
+                                        <div class="col-md-8">
+                                            {{product.description}}
+                                        </div>
+                                    </div>
+
                                 </div>
+                                </uib-tab>
 
-                            </div>
-                            <div class="row">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, vitae?</p>
+                            <uib-tab index="1" heading="Features"><div class="product-tabs">{{product.productFeatures}}</div></uib-tab>
+                            <uib-tab index="2" heading="Notes"><div class="product-tabs">Static content</div></uib-tab>
+                            <uib-tab index="3" heading="Reviews">
+                                <div class="product-tabs">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4> All Reviews : {{product.reviews.length}}</h4>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-info">Send Review</button>
+                                    </div>
+                                </div>
+                                <div class="bestReviews" ng-repeat="review in product.reviews">
+                                    <div class="review">
+                                        <div class="reviewInfo">
+                                        <div class="row">
 
-                            </div>
+                                            <div class="col-md-5">
+                                                <div class="reviewer">Author : <span class="reviewer-name">{{review.author}}</span>
+                                                    <div ng-controller="ratingReviewCtrl">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            Rate :
+                                                            <uib-rating ng-model="rate" max="max" read-only="isReadonly"
+                                                                        on-hover="hoveringOver(value)" on-leave="overStar = null"
+                                                                        titles="['one','two','three']"
+                                                                        aria-labelledby="default-rating"></uib-rating>
+                                    <span class="label"
+                                          ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70, 'label-success': percent>=70}"
+                                          >{{percent}}%</span>
+                                                        </div>
 
-                    </tabs>
+                                                    </div>
+
+                                                </div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="time">
+                                                    <small>{{review.datePublished}}</small>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                            <div class="reviewTitle">
+                                                {{review.title}}
+                                            </div>
+                                            <div class="reviewDescription">
+                                                {{review.description}}
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                    </div>
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
                 </div>
             </div>
         </div>

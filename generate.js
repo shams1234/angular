@@ -6,10 +6,25 @@ module.exports = function () {
             return {
                 id: n,
                 description: faker.lorem.paragraph(),
-                title: faker.lorem.word(),
-                img: faker.image.technics()
+                productName: faker.commerce.productName(),
+                productPrice: faker.commerce.price(),
+                productFeatures: faker.commerce.product(),
+                bestRating: faker.random.number({min:3,max:5}),
+                worstRating: faker.random.number({min : 0, max:3}),
+                img: faker.random.image(),
+                reviews: _.times(faker.random.number(15), function(n){
+                    return {
+                        id: n,
+                        description : faker.lorem.paragraph(),
+                        author: faker.internet.userName(),
+                        datePublished: faker.date.recent(),
+                        title: faker.name.title(),
+                        ratingValue: faker.random.number(5)
+                    }
+                })
         }
         }),
+       
         users: _.times(3, function(n){
             return {
                 id: n,
