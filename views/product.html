@@ -1,5 +1,8 @@
 <div class="container">
     <div class="row">
+        <div class="col-md-12">
+            <h2 class="productTitle text-center">{{product.productName}}</h2>
+            <hr>
         <div class="col-md-5">
             <img ng-src="{{product.img}}" alt="{{product.productName}}">
         </div>
@@ -8,19 +11,22 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- Nav tabs -->
-                    <h2 class="productTitle">{{product.productName}}</h2>
-
                     <div ng-controller="tabsCtrl">
 
                         <uib-tabset active="active">
+
                                 <uib-tab index="0" heading="Description"><div class="product-tabs">
                                     <div class="row">
+                                        <!--<div class="col-md-12">-->
+                                            <!--<h3 class="about">About Product:</h3>-->
+                                        <!--</div>-->
                                         <div class="col-md-4">
                                     <div class="price"><span >Price : </span>{{product.productPrice}}</div>
                                     <div class="bestRating"><span >Best Rating : </span>{{product.bestRating}}</div>
                                     <div class="worstRating"><span >Worst Rating : </span>{{product.worstRating}}</div>
                                 </div>
-                                        <div class="col-md-8">
+                                        <div class="tb col-md-8">
+
                                             {{product.description}}
                                         </div>
                                     </div>
@@ -40,7 +46,7 @@
                                         <button class="btn btn-info">Send Review</button>
                                     </div>
                                 </div>
-                                <div class="bestReviews" ng-repeat="review in product.reviews">
+                                <div class="bestReviews" ng-repeat="review in product.reviews | orderBy:'ratingValue'">
                                     <div class="review">
                                         <div class="reviewInfo">
                                         <div class="row">
@@ -82,6 +88,51 @@
                                             <div class="reviewDescription">
                                                 {{review.description}}
                                             </div>
+                                                 <!--TODO(shs): добавить логику и сделать контроллер-->
+                                                <div ng-controller="ReviewCollapseCtrl">
+                                                    <a class="reply" href="" ng-click="addReviewReply(review); isCollapsed = !isCollapsed"><i class="fa fa-reply" aria-hidden="true"></i> Reply</a>
+                                                    <div uib-collapse="isCollapsed">
+                                                        <hr>
+                                                        <div>
+                                                            <form class="form-horizontal" role="form">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-sm-2" for="authorName">Author:</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control" id="authorName" placeholder="Enter username">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-sm-2" for="reviewTitle">Title:</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control" id="reviewTitle" placeholder="Enter title for review">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-sm-2" for="reviewDescription">Description:</label>
+                                                                    <div class="col-sm-10">
+                                                                        <textarea name="reviewDescription" id="reviewDescription"
+                                                                                  rows="5"></textarea>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-sm-2" >Rate:</label>
+                                                                    <div class="col-sm-10">
+                                                                        <div ng-controller="AddRatingReviewCtrl">
+                                                                            <uib-rating ng-model="rate" max="max" read-only="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
+                                                                            <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70, 'label-success': percent>=70}" ng-show="overStar && !isReadonly">{{percent}}%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-offset-2 col-sm-10">
+                                                                        <button type="submit" class="btn btn-default">Submit</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -93,6 +144,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>

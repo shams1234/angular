@@ -376,3 +376,30 @@ i.centerFa.fa.fa-plus:hover {
 .alert.alert-success {
 	text-align: center;
 }
+
+a.reply:hover {
+	border-top: 2px solid #5BC0DE;
+	padding: 5px;
+	border-left: 1px solid #5BC0DE;
+	border-right: 1px solid #5BC0DE;
+}
+
+#reviewDescription {
+	width: 100%;
+	resize: vertical ;
+}
+
+.price {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.about {
+	color: #000;
+	text-decoration: dashed;
+}
+
+.tb {
+	border-left: 1px solid #5BC0DE;
+
+}

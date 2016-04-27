@@ -1897,6 +1897,7 @@
      * @param {boolean} [bindFnToScope=true]
      * @returns {Object} value as accessible by path
      */
+
 //TODO(misko): this function needs to be removed
     function getter(obj, path, bindFnToScope) {
         if (!path) return obj;

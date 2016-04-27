@@ -146,6 +146,10 @@
         $scope.isCollapsed = false;
     });
 
+    myApp.controller('ReviewCollapseCtrl', function ($scope) {
+        $scope.isCollapsed = true;
+    });
+
     myApp.controller("tabsCtrl", function ($scope) {
         $scope.tabs = [
 //            { title:'Dynamic Title 1', content:'Dynamic content 1'},
@@ -156,12 +160,26 @@
             name: "Tabs"
         };
     });
+    myApp.controller('AddRatingReviewCtrl', function ($scope) {
+        $scope.rate = 3;
+        $scope.max = 5;
+        $scope.isReadonly = false;
+
+        $scope.hoveringOver = function(value) {
+            $scope.overStar = value;
+            $scope.percent = 100 * (value / $scope.max);
+        };
+    });
 
     myApp.controller("ratingReviewCtrl", function ($scope) {
         $scope.rate = $scope.review.ratingValue;
         $scope.max = 5;
         $scope.percent = 100 * ($scope.rate / $scope.max);
         $scope.isReadonly = true;
+
+        $scope.addReviewReply = function (review){
+
+        };
 
 //        $scope.hoveringOver = function(value) {
 //            $scope.overStar = value;
