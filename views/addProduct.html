@@ -1,0 +1,29 @@
+<div class="addProduct">
+
+<h3>Now you can add new product. Please fill empty fields !</h3>
+
+<form name="form" class="form-horizontal" role="form" novalidate>
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Product Name:</label>
+        <div class="col-lg-8">
+            <input class="form-control" required name="newProductName" ng-model="newProductName" placeholder="Add product Name" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-lg-3 control-label">Description:</label>
+        <div class="col-lg-8">
+            <textarea class="form-control" name="newDescription" ng-model="newDescription" placeholder="Add description" rows="10"></textarea>
+        </div>
+    </div>
+    <div class="form-group" ng-controller="menuCtrl">
+        <label class="col-md-3 control-label"></label>
+        <div class="col-md-8">
+            <input type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addProduct(); go('/products')" value="Add Product">
+            <span></span>
+            <button class="btn btn-default" data-dismiss="modal" ng-click="reset(product)">Cancel
+            </button>
+        </div>
+    </div>
+</form>
+
+</div>
