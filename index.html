@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Angular</title>
+    <base href="/" />
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
@@ -25,7 +27,7 @@
 
     <script src="//cdn.auth0.com/w2/auth0-angular-4.js"></script>
 
-    <base href="/angular/">
+
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -56,11 +58,11 @@
 
 
 <div class="top-content" ng-controller="loginCtrl">
-    <div class="products" ng-controller="productsCtrl">
+    <div class="products" >
         <div class="inner-bg">
             <div ng-view>
             </div>
-            <div class="modal fade" id="myModal" role="dialog">
+            <!-- <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -100,7 +102,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -111,7 +113,7 @@
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
         <div class="container" ng-controller="logoutCtrl">
             <div class="footer">
-                <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="#!/login"
+                <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="/login"
                                                                                                 ng-click="logout()"> Logout
                     !</a></p>
             </div>
@@ -171,13 +173,21 @@
         };
     });
 
-    myApp.controller("ratingReviewCtrl", function ($scope) {
+    myApp.controller("ratingReviewCtrl", function ($scope, $http) {
         $scope.rate = $scope.review.ratingValue;
         $scope.max = 5;
         $scope.percent = 100 * ($scope.rate / $scope.max);
         $scope.isReadonly = true;
 
         $scope.addReviewReply = function (review){
+
+            $http.post("http://localhost:3000/products/reviews/" + review.id) .success (
+                    console.log(review)
+            );
+
+
+
+
 
         };
 
@@ -273,7 +283,7 @@
             store.remove("profile");
             store.remove("token");
             $location.path("/login");
-        }
+        };
     });
 
     myApp.controller("menuCtrl", function ($scope, $location) {
@@ -282,21 +292,67 @@
         };
     });
 
+
+    myApp.controller("addProductCtrl", function($scope, $httpAddRatingReviewCtrl){
+        $scope.addProduct = function (myProducts) {
+            $scope.products = myProducts;
+            var data = {
+                productName: $scope.newProductName,
+                description: $scope.newDescription,
+                img: ""
+            };
+            $http.post("http://localhost:3000/products/", data)
+                    .success(function () {
+                        $scope.PostDataResponse = data;
+                        $scope.info = true;
+                        // $scope.deleteMsg = 'Product "' + $scope.newTitle + '" was successfully added';
+                        console.log("Product successfully added");
+
+
+                    });
+
+
+
+        };
+
+
+//            $scope.copyProduct = function (product) {
+//                $scope.form = angular.copy(product);
+//                console.log($scope.form)
+//            };
+//
+        $scope.reset = function (product) {
+//            product.productName = $scope.form.title;
+//            product.description = $scope.form.description;
+//            product.img = $scope.form.img;
+//            $scope.info = true;
+//            $scope.deleteMsg = 'Product "' + product.productName + '" was not updated';
+            $scope.newTitle = '';
+            $scope.newDescription = "";
+            console.log("It's good")
+        };
+    });
+
     myApp.controller("productCtrl", function ($scope, $http, $routeParams) {
 
         $http ({
-            url: "http://localhost:3000/products/",
+            url: "http://localhost:3000/products",
             method: "get",
             params: {
                 id:$routeParams.id
             }
         })
-                .success(function(){
-                    $scope.product = $scope.products[$routeParams.id - 1];
-                })
+                .success(function(myProducts){
+                    $scope.products = myProducts;
+                    console.log($scope.products);
+
+                    $scope.product = $scope.products[0];
+
+             });
     });
 
-    myApp.controller("productsCtrl", function ($scope, $http) {
+    myApp.controller("productsCtrl", function ($scope, $http, $location) {
+
         $http.get("http://localhost:3000/products").success(function (myProducts) {
             $scope.products = myProducts;
             $scope.isVisible = true;
@@ -314,7 +370,6 @@
                             $scope.info = true;
                             $scope.products.splice(index, 1);
                             $scope.deleteMsg = 'Product  "' + product.productName + '" was successfully deleted';
-                            console.log($scope.products);
                         })
                         .error(function () {
 
@@ -333,42 +388,11 @@
                         });
 
             };
-            $scope.addProduct = function () {
-                var data = {
-                    title: $scope.newTitle,
-                    description: $scope.newDescription,
-                    img: ""
-                };
 
-                $http.post("http://localhost:3000/products/", data)
-                        .success(function () {
-                            $scope.PostDataResponse = data;
-                            $scope.info = true;
-                            $scope.deleteMsg = 'Product "' + $scope.newTitle + '" was successfully added';
-
-                            $scope.$apply();
-
-                        });
-
-
-            };
-
-//            $scope.copyProduct = function (product) {
-//                $scope.form = angular.copy(product);
-//                console.log($scope.form)
-//            };
-//
-//            $scope.reset = function (product) {
-//                product.productName = $scope.form.title;
-//                product.description = $scope.form.description;
-//                product.img = $scope.form.img;
-//                $scope.info = true;
-//                $scope.deleteMsg = 'Product "' + product.productName + '" was not updated';
-//            };
         });
     });
 
-    myApp.config(function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
+    myApp.config(['authProvider', '$routeProvider', '$httpProvider', 'jwtInterceptorProvider' , '$locationProvider', function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
 
 
                 jwtInterceptorProvider.tokenGetter = ["store", function (store) {
@@ -387,15 +411,15 @@
                     $location.path("/products");
                 });
 
-                authProvider.on("loginFailure/", function (err) {
+                authProvider.on("loginFailure", function (err) {
                     console.log("Something went wrong" + err);
                 });
                 $routeProvider
-                        .when("/login/", {
+                        .when("/login", {
                             templateUrl: "views/login.html",
                             controller: "loginCtrl"
                         })
-                        .when("/products/", {
+                        .when("/products", {
                             templateUrl: "views/products.html",
                             controller: "productsCtrl",
                             requiresLogin: true
@@ -406,10 +430,14 @@
                             controller: "aboutCtrl"
                             /* isAuthenticated will prevent user access to forbidden routes */
                         })
-                        .when("/about/", {
+                        .when("/about", {
                             templateUrl: "views/about.html",
                             controller: "aboutCtrl"
                             /* isAuthenticated will prevent user access to forbidden routes */
+                        })
+                        .when("/add_product", {
+                            templateUrl: "views/addProduct.html",
+                            controller: "addProductCtrl"
                         })
                         .when("/products/:id", {
                             templateUrl: "views/product.html",
@@ -423,7 +451,7 @@
 
 
                 $locationProvider
-                        .html5Mode(false)
+                        .html5Mode(true)
                         .hashPrefix('!');
 
 
@@ -436,7 +464,7 @@
 
                 });
 
-            })
+            }])
             .run(function (auth) {
                 // This hooks al auth events to check everything as soon as the app starts
                 auth.hookEvents();

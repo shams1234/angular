@@ -10,7 +10,7 @@
 <!--TODO(shs): сделать логику для добавления нового продукта-->
         <div class="col-sm-6 col-md-4 ">
             <div class="thumbnail">
-                <a href="" data-toggle="modal" data-target="#myModal"><i class="centerFa fa fa-plus"></i></a>
+                <a href="/add_product"  data-toggle="modal" data-target="#myModal"><i class="centerFa fa fa-plus"></i></a>
             </div>
         </div>
 
@@ -55,7 +55,7 @@
                             </div>
                         </script>
                         <p class="btn-thumb">
-                            <a href="#!/products/{{$index + 1}}" class="btn btn-info" ng-click="viewProduct(product)">View</a>
+                            <a href="/products/{{$index + 1}}" class="btn btn-info" ng-click="viewProduct(product)">View</a>
                             <button type="button" class="btn btn-default" ng-click="open('lg')" >Edit!</button>
                             <button class="btn btn-default" ng-click="deleteProduct(product)" role="button">
                                 Delete

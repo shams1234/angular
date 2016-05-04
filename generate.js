@@ -15,6 +15,7 @@ module.exports = function () {
                 reviews: _.times(faker.random.number(15), function(n){
                     return {
                         id: n,
+                        productId: "2",
                         description : faker.lorem.paragraph(),
                         author: faker.internet.userName(),
                         datePublished: faker.date.recent(),
@@ -25,9 +26,10 @@ module.exports = function () {
         }
         }),
        
-        users: _.times(3, function(n){
+        users: _.times(15, function(n){
             return {
                 id: n,
+                productsId : faker.random.number({min:0,max:15}),
                 firstName: faker.name.findName(),
                 lastName: faker.name.lastName(),
                 userName: faker.internet.userName(),
