@@ -1,15 +1,20 @@
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 1.6em;
     color: #F5F5F5;
-    line-height: 30px;
 	background-color: cadetblue
 /*text-align: center;*/
 
 }
 
+blockquote {
+	font-family: Georgia, arial, sans-serif;
+	color: #bbb;
+	font-size: 20px;
+}
 
 strong { font-weight: 500; }
 
@@ -251,6 +256,10 @@ footer a:hover, footer a:focus { color: #fff; border-bottom: 1px dotted #fff; }
 	h1, h2 { font-size: 32px; }
 
 }
+.fa {
+	color: #41B5D7;
+}
+
 
 .thumbnail {
     display: block;
@@ -264,7 +273,13 @@ footer a:hover, footer a:focus { color: #fff; border-bottom: 1px dotted #fff; }
     border-radius: 0 0 4px 4px;
     text-align: left;
     transition: border .2s ease-in-out;
+	position: relative;
 }
+
+/*.foot{*/
+	/*position: absolute;*/
+	/*bottom:0;*/
+/*}*/
 .flex-row .thumbnail,
 .flex-row .caption {
 	flex:1 0 auto;
@@ -275,7 +290,16 @@ footer a:hover, footer a:focus { color: #fff; border-bottom: 1px dotted #fff; }
 }
 .flex-row img {
 	height:auto;
-	width:100%
+	width:100%;
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.flex-row img:hover {
+	-webkit-filter: grayscale(0);
+	filter: grayscale(0);
 }
 
 @media only screen and (min-width : 768px) {
@@ -315,6 +339,10 @@ i.centerFa.fa.fa-plus:hover {
 .productTitle {
 	color: white;
 	text-align: left;
+	text-shadow: 4px 1px 7px rgb(33, 29, 29);
+}
+
+
 }
 
 
@@ -415,4 +443,18 @@ img.avatar {
 
 .logout {
 	display: inline-block;
+}
+
+.img-rounded {
+	height: 80%;
+	width: 55%;
+	margin: auto;
+}
+.about-table {
+	margin-top: 25px;
+}
+
+.product-img {
+	border-radius: 6px;
+	box-shadow: rgba(0, 0, 0, 0.129412) 10px 13px 29px 5px;
 }

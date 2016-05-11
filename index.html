@@ -162,7 +162,8 @@
             name: "Tabs"
         };
     });
-    myApp.controller('AddRatingReviewCtrl', function ($scope) {
+
+    myApp.controller('AddRatingReviewCtrl', function ($scope, $http, $routeParams, $filter) {
         $scope.rate = 3;
         $scope.max = 5;
         $scope.isReadonly = false;
@@ -171,22 +172,52 @@
             $scope.overStar = value;
             $scope.percent = 100 * (value / $scope.max);
         };
+
+        $scope.addProductReview = function (myReviews) {
+            $scope.review = myReviews;
+            var today = $filter('date')(new Date(),'yyyy-MM-dd HH:mm:ss');
+            var data = {
+                author: $scope.newAuthorName || "",
+                description: $scope.newReviewDescription || "",
+                title: $scope.newReviewTitle || "",
+                ratingValue: $scope.rate,
+                datePublished: today
+
+            };
+            console.log (data);
+            $http.post("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/", data)
+                    .success(function () {
+                        $scope.PostDataResponse = data;
+                        console.log("Review successfully added");
+
+                        $http.get("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/").success (function(reviews) {
+                            $scope.product.reviews = reviews;
+                            console.log($scope.product.reviews)
+                        })
+
+                    })
+                    .error(function(error){
+                       console.log("Something went wrong" + error)
+                    });
+            $scope.newAuthorName = "";
+            $scope.newReviewDescription = "";
+            $scope.newReviewTitle = "";
+
+        };
     });
 
-    myApp.controller("ratingReviewCtrl", function ($scope, $http) {
+    myApp.controller("ratingReviewCtrl", function ($scope) {
         $scope.rate = $scope.review.ratingValue;
-
-        console.log($scope.rate);
         $scope.max = 5;
         $scope.percent = 100 * ($scope.rate / $scope.max);
         $scope.isReadonly = true;
 
-        $scope.addProductReview = function (product){
-//            $http.post("http://localhost:3000/products/" + product.id) .success (
-                    console.log(product.reviews[0].author);
+//        $scope.addProductReview = function (reviews){
+//            $http.post("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/") .success (
+//                    console.log(newAuther)
 //            );
-
-        };
+//
+//        };
 
 //        $scope.hoveringOver = function(value) {
 //            $scope.overStar = value;
@@ -332,10 +363,10 @@
     });
 
     myApp.controller("reviewCtrl", function ($scope, $http, $routeParams){
-        $http.get("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/").success (function(reviews) {
-            $scope.product.reviews = reviews;
-            console.log($scope.product.reviews)
-        })
+            $http.get("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/").success (function(reviews) {
+                $scope.product.reviews = reviews;
+                console.log($scope.product.reviews)
+                })
             });
 
     myApp.controller("productCtrl", function ($scope, $http, $routeParams) {

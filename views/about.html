@@ -11,18 +11,70 @@
 </div>
 
 <div class="container" ng-show="auth.isAuthenticated">
-    <div class="row">
-        <div class="user-profile">
-            <div class="col-md-12">
-                <h1>User profile: </h1>
-                <p>Picture: <img ng-src="{{auth.profile.picture}}" alt="{{auth.profile.name}}"></p>
-                <p>Name: {{auth.profile.name || "Sorry this field is empty"}}</p>
-                <p>Nickname: {{auth.profile.nickname || "Sorry this field is empty"}}</p>
-                <p>Email: {{auth.profile.email || "Sorry this field is empty"}}</p>
-                <p>Gender: {{auth.profile.gender || "Sorry this field is empty"}}</p>
-                <p>Created at: {{auth.profile.created_at || "Sorry this field is empty"}}</p>
-                <p>Last Login: {{auth.profile.last_login || "Sorry this field is empty"}}</p>
+    <section id="about" class="home-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+
+                    <div class="section-heading text-center">
+                        <div class="wow bounceInDown" data-wow-delay="0.2s">
+                            <h2>Hi, My name is {{auth.profile.name || "Sorry this field is empty"}}</h2>
+                        </div>
+                        <p class="wow bounceInUp" data-wow-delay="0.3s">User profile and history :(</p>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
+
+        <div class="container" ng-controller="ReviewCollapseCtrl">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <img ng-src="{{auth.profile.picture}}" class="img-responsive img-rounded" alt="{{auth.profile.name}}" />
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Lorem ipsum dolor sit amet, ei purto tamquam ceteros his</strong></p>
+                    <p>
+                        Lorem ipsum dolor sit amet, ei purto tamquam ceteros his, eos in graece posidonium.
+                        Ex nullam vidisse salutatus sed, ea persius phaedrum tincidunt vel. Option virtute nonumes ne est.
+                        Id homero expetendis eam, dictas rationibus ut has.
+                    </p>
+                    <blockquote>
+                        Pri pertinacia elaboraret te, an eirmod delicatissimi nec. Eu liber quodsi maiorum mei.
+                        Civibus perfecto rationibus id his, est noster nostrud aliquando at.
+                    </blockquote>
+                    <a href="" ng-click="isCollapsed = !isCollapsed" class="btn btn-info btn-lg ">See my Profile</a>
+                </div>
+            </div>
+            <div uib-collapse="isCollapsed">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table about-table" >
+                        <thead>
+                        <tr>
+                            <th>Fullname</th>
+                            <th>Nickname</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>Created at</th>
+                            <th>Last Login</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{auth.profile.name || "Sorry this field is empty"}}</td>
+                            <td>{{auth.profile.nickname || "Sorry this field is empty"}}</td>
+                            <td>{{auth.profile.email || "Sorry this field is empty"}}</td>
+                            <td>{{auth.profile.gender || "Sorry this field is empty"}}</td>
+                            <td>{{auth.profile.created_at || "Sorry this field is empty"}}</td>
+                            <td>{{auth.profile.last_login || "Sorry this field is empty"}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                </div>
+        </div>
+    </section>
 </div>
