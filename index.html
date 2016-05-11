@@ -44,12 +44,16 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">Angular</a>
+                <div class="logout" ng-controller="logoutCtrl" ng-show="auth.isAuthenticated">
+                <img class="avatar" ng-src="{{auth.profile.picture}}"  style="height: 40px" alt="{{auth.profile.name}}">
+                <a href="/" ng-click="logout()"> Logout ! </a></div>
             </div>
             <div uib-collapse="isCollapsed">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="" ng-click="go('/about')">About</a></li>
                     <li><a href="" ng-click="go('/products')">Products</a></li>
-                    <li><a href="" ng-click="go('/login')">Login/Registration</a></li>
+                    <li ng-hide="auth.isAuthenticated"><a href="" ng-click="go('/login')">Login/Registration</a></li>
+
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -112,11 +116,7 @@
 <footer ng-controller="loginCtrl">
     <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
         <div class="container" ng-controller="logoutCtrl">
-            <div class="footer">
-                <p>Signed in as <a href="#" class="navbar-link">{{auth.profile.nickname}}</a><a href="/login"
-                                                                                                ng-click="logout()"> Logout
-                    !</a></p>
-            </div>
+            <div class="footer" ng-show="auth.isAuthenticated">Welcome, {{auth.profile.name}}!</div>
 
         </div>
     </nav>
@@ -138,7 +138,7 @@
                             }
                         } else {
                             // Either show the login page or use the refresh token to get a new idToken
-                            $location.path("/about");
+                            $location.path("/");
                         }
                     }
                 });
@@ -175,19 +175,16 @@
 
     myApp.controller("ratingReviewCtrl", function ($scope, $http) {
         $scope.rate = $scope.review.ratingValue;
+
+        console.log($scope.rate);
         $scope.max = 5;
         $scope.percent = 100 * ($scope.rate / $scope.max);
         $scope.isReadonly = true;
 
-        $scope.addReviewReply = function (review){
-
-            $http.post("http://localhost:3000/products/reviews/" + review.id) .success (
-                    console.log(review)
-            );
-
-
-
-
+        $scope.addProductReview = function (product){
+//            $http.post("http://localhost:3000/products/" + product.id) .success (
+                    console.log(product.reviews[0].author);
+//            );
 
         };
 
@@ -268,7 +265,7 @@
     });
 
 
-    myApp.controller("loginCtrl", function ($scope, auth, store, $location) {
+    myApp.controller("loginCtrl", function ($scope, auth) {
         $scope.auth = auth;
     });
 
@@ -277,23 +274,24 @@
     });
 
     myApp.controller("logoutCtrl", function (auth, $scope, $location, store) {
-
+        $location.path('/login');
         $scope.logout = function () {
-            auth.signout();
             store.remove("profile");
             store.remove("token");
-            $location.path("/login");
+
+            auth.signout();
         };
     });
 
-    myApp.controller("menuCtrl", function ($scope, $location) {
+    myApp.controller("menuCtrl", function ($scope, $location, auth) {
+        $scope.auth = auth;
         $scope.go = function (target) {
             $location.path(target);
         };
     });
 
 
-    myApp.controller("addProductCtrl", function($scope, $httpAddRatingReviewCtrl){
+    myApp.controller("addProductCtrl", function($scope, $http){
         $scope.addProduct = function (myProducts) {
             $scope.products = myProducts;
             var data = {
@@ -301,7 +299,7 @@
                 description: $scope.newDescription,
                 img: ""
             };
-            $http.post("http://localhost:3000/products/", data)
+            $http.post("http://localhost:3000/products", data)
                     .success(function () {
                         $scope.PostDataResponse = data;
                         $scope.info = true;
@@ -333,6 +331,13 @@
         };
     });
 
+    myApp.controller("reviewCtrl", function ($scope, $http, $routeParams){
+        $http.get("http://localhost:3000/products\\" + $routeParams.id + "\\reviews/").success (function(reviews) {
+            $scope.product.reviews = reviews;
+            console.log($scope.product.reviews)
+        })
+            });
+
     myApp.controller("productCtrl", function ($scope, $http, $routeParams) {
 
         $http ({
@@ -344,8 +349,6 @@
         })
                 .success(function(myProducts){
                     $scope.products = myProducts;
-                    console.log($scope.products);
-
                     $scope.product = $scope.products[0];
 
              });
@@ -392,6 +395,14 @@
         });
     });
 
+    myApp.directive('addReview', function(){
+        return {
+            restrict: "A",
+            templateUrl: "views/addReview.html"
+        }
+    });
+
+
     myApp.config(['authProvider', '$routeProvider', '$httpProvider', 'jwtInterceptorProvider' , '$locationProvider', function (authProvider, $routeProvider, $httpProvider, jwtInterceptorProvider, $locationProvider) {
 
 
@@ -437,17 +448,18 @@
                         })
                         .when("/add_product", {
                             templateUrl: "views/addProduct.html",
-                            controller: "addProductCtrl"
+                            controller: "addProductCtrl",
+                            requiresLogin: true
                         })
                         .when("/products/:id", {
                             templateUrl: "views/product.html",
                             controller: "productCtrl",
                             requiresLogin: true
                             /* isAuthenticated will prevent user access to forbidden routes */
+                        })
+                        .otherwise({
+                            redirectTo: "/login"
                         });
-//                        .otherwise({
-//                            redirectTo: "/about"
-//                        });
 
 
                 $locationProvider

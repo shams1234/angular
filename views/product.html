@@ -38,13 +38,19 @@
                             <uib-tab index="2" heading="Notes"><div class="product-tabs">Static content</div></uib-tab>
                             <uib-tab index="3" heading="Reviews">
                                 <div class="product-tabs">
-                                <div class="row">
+                                <div class="row" ng-controller="reviewCtrl" >
                                     <div class="col-md-8">
                                         <h4> All Reviews : {{product.reviews.length}}</h4>
                                     </div>
+                                    <div ng-controller="ReviewCollapseCtrl">
                                     <div class="col-md-4">
-                                        <button class="btn btn-info">Send Review</button>
+                                        <button class="btn btn-info" ng-click="isCollapsed = !isCollapsed">Write a Review</button>
                                     </div>
+                                    <div class="col-md-12" uib-collapse="isCollapsed">
+                                        <div add-review></div>
+                                    </div>
+                                    </div>
+
                                 </div>
                                 <div class="bestReviews" ng-repeat="review in product.reviews | orderBy:'ratingValue'">
                                     <div class="review">
@@ -93,44 +99,7 @@
                                                     <a class="reply" href="" ng-click="addReviewReply(review); isCollapsed = !isCollapsed"><i class="fa fa-reply" aria-hidden="true"></i> Reply</a>
                                                     <div uib-collapse="isCollapsed">
                                                         <hr>
-                                                        <div>
-                                                            <form class="form-horizontal" role="form">
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-sm-2" for="authorName">Author:</label>
-                                                                    <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="authorName" placeholder="Enter username">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-sm-2" for="reviewTitle">Title:</label>
-                                                                    <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="reviewTitle" placeholder="Enter title for review">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-sm-2" for="reviewDescription">Description:</label>
-                                                                    <div class="col-sm-10">
-                                                                        <textarea name="reviewDescription" id="reviewDescription"
-                                                                                  rows="5"></textarea>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-sm-2" >Rate:</label>
-                                                                    <div class="col-sm-10">
-                                                                        <div ng-controller="AddRatingReviewCtrl">
-                                                                            <uib-rating ng-model="rate" max="max" read-only="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
-                                                                            <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70, 'label-success': percent>=70}" ng-show="overStar && !isReadonly">{{percent}}%</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <hr>
-                                                                <div class="form-group" ng-controller="ratingReviewCtrl">
-                                                                    <div class="col-sm-offset-2 col-sm-10">
-                                                                        <button type="button" class="btn btn-default" ng-click="addReviewReply(review)">Reply</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
+                                                        <div add-review></div>
                                                     </div>
                                                 </div>
                                             </div>

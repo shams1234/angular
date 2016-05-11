@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-hide="auth.isAuthenticated">
     <div class="row">
         <div class="about-container">
             <div class="col-md-12">
@@ -10,4 +10,19 @@
     </div>
 </div>
 
-
+<div class="container" ng-show="auth.isAuthenticated">
+    <div class="row">
+        <div class="user-profile">
+            <div class="col-md-12">
+                <h1>User profile: </h1>
+                <p>Picture: <img ng-src="{{auth.profile.picture}}" alt="{{auth.profile.name}}"></p>
+                <p>Name: {{auth.profile.name || "Sorry this field is empty"}}</p>
+                <p>Nickname: {{auth.profile.nickname || "Sorry this field is empty"}}</p>
+                <p>Email: {{auth.profile.email || "Sorry this field is empty"}}</p>
+                <p>Gender: {{auth.profile.gender || "Sorry this field is empty"}}</p>
+                <p>Created at: {{auth.profile.created_at || "Sorry this field is empty"}}</p>
+                <p>Last Login: {{auth.profile.last_login || "Sorry this field is empty"}}</p>
+            </div>
+        </div>
+    </div>
+</div>
